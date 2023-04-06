@@ -35,15 +35,16 @@ export const groupBtnStyle = Styles.style({
   }
 });
 
-export const groupChartStyle = Styles.style({
+export const tradingChartStyle = Styles.style({
+  display: 'block',
   $nest: {
-    'i-line-chart': {
-      opacity: 0,
-      zIndex: 1
-    },
-    'i-line-chart.trading-chart--active': {
-      opacity: 1,
-      zIndex: 2
+    '&.trading-chart--dark': {
+      background: '#100c2a',
+      $nest: {
+        '#lbTitle': {
+          color: '#fff !important'
+        }
+      }
     }
   }
 })

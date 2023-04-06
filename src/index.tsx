@@ -15,7 +15,7 @@ import {
   Label
 } from '@ijstech/components';
 import { IConfig, PageBlock } from './store/index';
-import { groupBtnStyle, groupChartStyle } from './index.css';
+import { groupBtnStyle, tradingChartStyle } from './index.css';
 
 // Dummy data
 import { day, week, month, threeMonths, year, all, historical, ytd } from './store/index';
@@ -74,7 +74,8 @@ interface ICandlestickData {
 interface TradingChartElement extends ControlElement {
   tokenAddress: string;
   tokenSymbol: string;
-  chainId?: string | number
+  chainId?: string | number;
+  theme?: 'light' | 'dark';
 }
 
 declare global {
@@ -90,8 +91,8 @@ declare global {
 export default class ScomTradingChart extends Module implements PageBlock {
   private pnlTradingChart: Panel;
   private lbTitle: Label;
-  private lineChartPrice: LineChart;
-  private lineAndCandlestickChart: LineChart;
+  private pnlCharts: Panel;
+  private chartElm: LineChart;
   private typeChart: IType = 'price';
   private duration: IDuration = 1;
   private hStackType: HStack;
@@ -133,8 +134,13 @@ export default class ScomTradingChart extends Module implements PageBlock {
 
   async setTag(value: any) {
     this.tag = value;
+    this.width = this.tag.width;
+    if (this.tag?.theme === 'dark') {
+      this.classList.add('trading-chart--dark');
+    } else {
+      this.classList.remove('trading-chart--dark');
+    }
     if (this.pnlTradingChart) {
-      this.pnlTradingChart.width = this.tag.width;
       this.updateChart();
       setTimeout(() => {
         this.resizeCharts();
@@ -152,16 +158,16 @@ export default class ScomTradingChart extends Module implements PageBlock {
   }
 
   async edit() {
-    // this.pnlSocialMedia.visible = false
+    // this.pnlTradingChart.visible = false;
   }
 
   async confirm() {
     this.updateChart();
-    // this.pnlSocialMedia.visible = true
+    // this.pnlTradingChart.visible = true;
   }
 
   async discard() {
-    // this.pnlSocialMedia.visible = true
+    // this.pnlTradingChart.visible = true;
   }
 
   async config() { }
@@ -195,6 +201,14 @@ export default class ScomTradingChart extends Module implements PageBlock {
     const themeSchema = {
       type: 'object',
       properties: {
+        theme: {
+          type: 'string',
+          enum: [
+            'light',
+            'dark'
+          ],
+          readOnly
+        },
         width: {
           type: 'string',
           readOnly
@@ -383,12 +397,14 @@ export default class ScomTradingChart extends Module implements PageBlock {
     }
   }
 
-  private initChart(data: any, type: IType) {
+  private initChart(data: any, type: IType, isDark: boolean) {
     const { price, market, vol, minPrice, maxPrice, minMarket, maxMarket } = data;
     const self = this;
     const isPrice = type === 'price';
     const firstValue = price[0] ? price[0][1] : 0;
-    const lastValue = price[price.length - 1] ? price[price.length - 1][1] : 0;
+    const lastItem = price[price.length - 1];
+    const lastValue = lastItem ? lastItem[1] : 0;
+    const lastTime = lastItem ? lastItem[0] : 0;
     const minInterval = (isPrice ? (maxPrice - minPrice) : (maxMarket - minMarket)) / 8;
     const power = Math.pow(10, Math.floor(Math.log10(minInterval)));
     const roundedInterval = Math.ceil(minInterval / power) * power;
@@ -454,7 +470,7 @@ export default class ScomTradingChart extends Module implements PageBlock {
       // visualMap: isPrice ? {
       //   show: false,
       //   min: price[0] ? price[0][1] : 0,
-      //   max: price[0] ? (price[0][1] + 1e0) : 0,
+      //   max: price[0] ? (price[0][1] + 1e-10) : 0,
       //   inRange: {
       //     color: ['#ea3943', '#16c784']
       //   }
@@ -495,6 +511,15 @@ export default class ScomTradingChart extends Module implements PageBlock {
             ],
             symbol: 'none',
           } : null,
+          markPoint: isPrice ? {
+            symbol: 'circle',
+            symbolSize: 10,
+            data: [{
+              name: 'Current Price',
+              xAxis: lastTime,
+              yAxis: lastValue
+            }]
+          } : null,
           areaStyle: isPrice ? {
             color: {
               type: 'linear',
@@ -508,7 +533,7 @@ export default class ScomTradingChart extends Module implements PageBlock {
                   color: lastValue >= firstValue ? '#16c784' : '#ea3943'
                 }, {
                   offset: 1,
-                  color: '#fff'
+                  color: isDark ? '#000' : '#fff'
                 }
               ]
             }
@@ -621,15 +646,26 @@ export default class ScomTradingChart extends Module implements PageBlock {
     return chartData;
   }
 
-  private updateChart() {
+  private updateChart(isType?: boolean) {
     if (!this.pnlTradingChart) return;
+    const theme = this.tag?.theme;
     const chartData = this.getChartData();
-    const price = this.initChart(chartData, 'price');
-    const market = this.typeChart === 'candlestick' ? this.initCandlestickChart(this.convertToCandlestickData(historical.data.quotes)) : this.initChart(chartData, 'market');
-    this.lineChartPrice.data = price;
-    this.lineAndCandlestickChart.data = market;
-    this.lineChartPrice.drawChart();
-    this.lineAndCandlestickChart.drawChart();
+    const data = this.typeChart !== 'candlestick' ? this.initChart(chartData, this.typeChart, theme === 'dark') : this.initCandlestickChart(this.convertToCandlestickData(historical.data.quotes));
+    if (isType || !this.chartElm) {
+      this.pnlCharts.clearInnerHTML();
+      this.chartElm = new LineChart(this.pnlCharts, {
+        width: '100%',
+        height: 500,
+        theme: theme || 'light',
+        data: data
+      });
+      if (!isType && this.tag?.theme) {
+        this.chartElm.theme = theme;
+      }
+    } else {
+      this.chartElm.data = data;
+    }
+    this.chartElm.drawChart();
   }
 
   private onTypeChange(src: Control, type: IType, isSwitch?: boolean) {
@@ -641,19 +677,12 @@ export default class ScomTradingChart extends Module implements PageBlock {
       btnType.classList.remove('chart-btn--active');
     }
     src.classList.add('chart-btn--active');
-    if (type === 'price') {
-      this.lineChartPrice.classList.add('trading-chart--active');
-      this.lineAndCandlestickChart.classList.remove('trading-chart--active');
-    } else {
-      this.lineChartPrice.classList.remove('trading-chart--active');
-      this.lineAndCandlestickChart.classList.add('trading-chart--active');
-    }
     if (!isSwitch) {
       this.hStackSwitch.firstElementChild?.classList.add('chart-btn--active');
       this.hStackSwitch.lastElementChild?.classList.remove('chart-btn--active');
     }
     this.hStackSwitch.visible = !(!isSwitch && type === 'market');
-    this.updateChart();
+    this.updateChart(true);
   }
 
   private onDurationChange(src: Button, duration: IDuration) {
@@ -668,12 +697,15 @@ export default class ScomTradingChart extends Module implements PageBlock {
   }
 
   private resizeCharts() {
-    this.lineChartPrice?.resize();
-    this.lineAndCandlestickChart?.resize();
+    this.chartElm?.resize();
   }
 
   init() {
     super.init();
+    this.classList.add(tradingChartStyle);
+    if (this.tag?.theme === 'dark') {
+      this.classList.add('trading-chart--dark');
+    }
     const chainId = this.getAttribute('chainId', true, 0);
     const tokenAddress = this.getAttribute('tokenAddress', true, '');
     const tokenSymbol = this.getAttribute('tokenSymbol', true, '');
@@ -712,10 +744,7 @@ export default class ScomTradingChart extends Module implements PageBlock {
             }
           </i-hstack>
         </i-hstack>
-        <i-panel width="100%" position="relative" minHeight={500} class={groupChartStyle}>
-          <i-line-chart position="absolute" id="lineChartPrice" class="trading-chart--active" width="100%" height="500" />
-          <i-line-chart position="absolute" id="lineAndCandlestickChart" width="100%" height="500" />
-        </i-panel>
+        <i-panel id="pnlCharts" width="100%" minHeight={500} />
       </i-panel>
     )
   }

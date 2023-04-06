@@ -16766,7 +16766,7 @@ declare module "@scom/scom-trading-chart/store/index.ts" {
 /// <amd-module name="@scom/scom-trading-chart/index.css.ts" />
 declare module "@scom/scom-trading-chart/index.css.ts" {
     export const groupBtnStyle: string;
-    export const groupChartStyle: string;
+    export const tradingChartStyle: string;
 }
 /// <amd-module name="@scom/scom-trading-chart/assets.ts" />
 declare module "@scom/scom-trading-chart/assets.ts" {
@@ -16784,6 +16784,7 @@ declare module "@scom/scom-trading-chart" {
         tokenAddress: string;
         tokenSymbol: string;
         chainId?: string | number;
+        theme?: 'light' | 'dark';
     }
     global {
         namespace JSX {
@@ -16795,8 +16796,8 @@ declare module "@scom/scom-trading-chart" {
     export default class ScomTradingChart extends Module implements PageBlock {
         private pnlTradingChart;
         private lbTitle;
-        private lineChartPrice;
-        private lineAndCandlestickChart;
+        private pnlCharts;
+        private chartElm;
         private typeChart;
         private duration;
         private hStackType;

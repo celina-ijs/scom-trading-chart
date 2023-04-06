@@ -58563,7 +58563,7 @@ define("@scom/scom-trading-chart/store/index.ts", ["require", "exports", "@scom/
 define("@scom/scom-trading-chart/index.css.ts", ["require", "exports", "@ijstech/components"], function (require, exports, components_1) {
     "use strict";
     Object.defineProperty(exports, "__esModule", { value: true });
-    exports.groupChartStyle = exports.groupBtnStyle = void 0;
+    exports.tradingChartStyle = exports.groupBtnStyle = void 0;
     const defaultBtn = {
         padding: '7px 9px',
         borderRadius: '6px',
@@ -58594,15 +58594,16 @@ define("@scom/scom-trading-chart/index.css.ts", ["require", "exports", "@ijstech
             }
         }
     });
-    exports.groupChartStyle = components_1.Styles.style({
+    exports.tradingChartStyle = components_1.Styles.style({
+        display: 'block',
         $nest: {
-            'i-line-chart': {
-                opacity: 0,
-                zIndex: 1
-            },
-            'i-line-chart.trading-chart--active': {
-                opacity: 1,
-                zIndex: 2
+            '&.trading-chart--dark': {
+                background: '#100c2a',
+                $nest: {
+                    '#lbTitle': {
+                        color: '#fff !important'
+                    }
+                }
             }
         }
     });
@@ -58680,9 +58681,16 @@ define("@scom/scom-trading-chart", ["require", "exports", "@ijstech/components",
             return this.tag;
         }
         async setTag(value) {
+            var _a;
             this.tag = value;
+            this.width = this.tag.width;
+            if (((_a = this.tag) === null || _a === void 0 ? void 0 : _a.theme) === 'dark') {
+                this.classList.add('trading-chart--dark');
+            }
+            else {
+                this.classList.remove('trading-chart--dark');
+            }
             if (this.pnlTradingChart) {
-                this.pnlTradingChart.width = this.tag.width;
                 this.updateChart();
                 setTimeout(() => {
                     this.resizeCharts();
@@ -58697,14 +58705,14 @@ define("@scom/scom-trading-chart", ["require", "exports", "@ijstech/components",
             this.updateChart();
         }
         async edit() {
-            // this.pnlSocialMedia.visible = false
+            // this.pnlTradingChart.visible = false;
         }
         async confirm() {
             this.updateChart();
-            // this.pnlSocialMedia.visible = true
+            // this.pnlTradingChart.visible = true;
         }
         async discard() {
-            // this.pnlSocialMedia.visible = true
+            // this.pnlTradingChart.visible = true;
         }
         async config() { }
         getPropertiesSchema(readOnly) {
@@ -58735,6 +58743,14 @@ define("@scom/scom-trading-chart", ["require", "exports", "@ijstech/components",
             const themeSchema = {
                 type: 'object',
                 properties: {
+                    theme: {
+                        type: 'string',
+                        enum: [
+                            'light',
+                            'dark'
+                        ],
+                        readOnly
+                    },
                     width: {
                         type: 'string',
                         readOnly
@@ -58928,12 +58944,14 @@ define("@scom/scom-trading-chart", ["require", "exports", "@ijstech/components",
                 return num.toFixed(2);
             }
         }
-        initChart(data, type) {
+        initChart(data, type, isDark) {
             const { price, market, vol, minPrice, maxPrice, minMarket, maxMarket } = data;
             const self = this;
             const isPrice = type === 'price';
             const firstValue = price[0] ? price[0][1] : 0;
-            const lastValue = price[price.length - 1] ? price[price.length - 1][1] : 0;
+            const lastItem = price[price.length - 1];
+            const lastValue = lastItem ? lastItem[1] : 0;
+            const lastTime = lastItem ? lastItem[0] : 0;
             const minInterval = (isPrice ? (maxPrice - minPrice) : (maxMarket - minMarket)) / 8;
             const power = Math.pow(10, Math.floor(Math.log10(minInterval)));
             const roundedInterval = Math.ceil(minInterval / power) * power;
@@ -58999,7 +59017,7 @@ define("@scom/scom-trading-chart", ["require", "exports", "@ijstech/components",
                 // visualMap: isPrice ? {
                 //   show: false,
                 //   min: price[0] ? price[0][1] : 0,
-                //   max: price[0] ? (price[0][1] + 1e0) : 0,
+                //   max: price[0] ? (price[0][1] + 1e-10) : 0,
                 //   inRange: {
                 //     color: ['#ea3943', '#16c784']
                 //   }
@@ -59040,6 +59058,15 @@ define("@scom/scom-trading-chart", ["require", "exports", "@ijstech/components",
                             ],
                             symbol: 'none',
                         } : null,
+                        markPoint: isPrice ? {
+                            symbol: 'circle',
+                            symbolSize: 10,
+                            data: [{
+                                    name: 'Current Price',
+                                    xAxis: lastTime,
+                                    yAxis: lastValue
+                                }]
+                        } : null,
                         areaStyle: isPrice ? {
                             color: {
                                 type: 'linear',
@@ -59053,7 +59080,7 @@ define("@scom/scom-trading-chart", ["require", "exports", "@ijstech/components",
                                         color: lastValue >= firstValue ? '#16c784' : '#ea3943'
                                     }, {
                                         offset: 1,
-                                        color: '#fff'
+                                        color: isDark ? '#000' : '#fff'
                                     }
                                 ]
                             }
@@ -59164,16 +59191,29 @@ define("@scom/scom-trading-chart", ["require", "exports", "@ijstech/components",
             };
             return chartData;
         }
-        updateChart() {
+        updateChart(isType) {
+            var _a, _b;
             if (!this.pnlTradingChart)
                 return;
+            const theme = (_a = this.tag) === null || _a === void 0 ? void 0 : _a.theme;
             const chartData = this.getChartData();
-            const price = this.initChart(chartData, 'price');
-            const market = this.typeChart === 'candlestick' ? this.initCandlestickChart(this.convertToCandlestickData(index_2.historical.data.quotes)) : this.initChart(chartData, 'market');
-            this.lineChartPrice.data = price;
-            this.lineAndCandlestickChart.data = market;
-            this.lineChartPrice.drawChart();
-            this.lineAndCandlestickChart.drawChart();
+            const data = this.typeChart !== 'candlestick' ? this.initChart(chartData, this.typeChart, theme === 'dark') : this.initCandlestickChart(this.convertToCandlestickData(index_2.historical.data.quotes));
+            if (isType || !this.chartElm) {
+                this.pnlCharts.clearInnerHTML();
+                this.chartElm = new components_3.LineChart(this.pnlCharts, {
+                    width: '100%',
+                    height: 500,
+                    theme: theme || 'light',
+                    data: data
+                });
+                if (!isType && ((_b = this.tag) === null || _b === void 0 ? void 0 : _b.theme)) {
+                    this.chartElm.theme = theme;
+                }
+            }
+            else {
+                this.chartElm.data = data;
+            }
+            this.chartElm.drawChart();
         }
         onTypeChange(src, type, isSwitch) {
             var _a, _b;
@@ -59186,20 +59226,12 @@ define("@scom/scom-trading-chart", ["require", "exports", "@ijstech/components",
                 btnType.classList.remove('chart-btn--active');
             }
             src.classList.add('chart-btn--active');
-            if (type === 'price') {
-                this.lineChartPrice.classList.add('trading-chart--active');
-                this.lineAndCandlestickChart.classList.remove('trading-chart--active');
-            }
-            else {
-                this.lineChartPrice.classList.remove('trading-chart--active');
-                this.lineAndCandlestickChart.classList.add('trading-chart--active');
-            }
             if (!isSwitch) {
                 (_a = this.hStackSwitch.firstElementChild) === null || _a === void 0 ? void 0 : _a.classList.add('chart-btn--active');
                 (_b = this.hStackSwitch.lastElementChild) === null || _b === void 0 ? void 0 : _b.classList.remove('chart-btn--active');
             }
             this.hStackSwitch.visible = !(!isSwitch && type === 'market');
-            this.updateChart();
+            this.updateChart(true);
         }
         onDurationChange(src, duration) {
             if (this.duration === duration)
@@ -59213,12 +59245,16 @@ define("@scom/scom-trading-chart", ["require", "exports", "@ijstech/components",
             this.updateChart();
         }
         resizeCharts() {
-            var _a, _b;
-            (_a = this.lineChartPrice) === null || _a === void 0 ? void 0 : _a.resize();
-            (_b = this.lineAndCandlestickChart) === null || _b === void 0 ? void 0 : _b.resize();
+            var _a;
+            (_a = this.chartElm) === null || _a === void 0 ? void 0 : _a.resize();
         }
         init() {
+            var _a;
             super.init();
+            this.classList.add(index_css_1.tradingChartStyle);
+            if (((_a = this.tag) === null || _a === void 0 ? void 0 : _a.theme) === 'dark') {
+                this.classList.add('trading-chart--dark');
+            }
             const chainId = this.getAttribute('chainId', true, 0);
             const tokenAddress = this.getAttribute('tokenAddress', true, '');
             const tokenSymbol = this.getAttribute('tokenSymbol', true, '');
@@ -59248,9 +59284,7 @@ define("@scom/scom-trading-chart", ["require", "exports", "@ijstech/components",
                         this.$render("i-image", { url: assets_1.default.fullPath('img/line.svg'), class: "chart-btn--active", onClick: (src) => this.onTypeChange(src, 'price', true) }),
                         this.$render("i-image", { url: assets_1.default.fullPath('img/candlestick.svg'), onClick: (src) => this.onTypeChange(src, 'candlestick', true) })),
                     this.$render("i-hstack", { id: "hStackDuration", class: index_css_1.groupBtnStyle, margin: { left: 'auto' } }, durations.map((v, index) => this.$render("i-button", { caption: v.title, class: index === 0 ? 'chart-btn--active' : '', onClick: (src) => this.onDurationChange(src, v.value) })))),
-                this.$render("i-panel", { width: "100%", position: "relative", minHeight: 500, class: index_css_1.groupChartStyle },
-                    this.$render("i-line-chart", { position: "absolute", id: "lineChartPrice", class: "trading-chart--active", width: "100%", height: "500" }),
-                    this.$render("i-line-chart", { position: "absolute", id: "lineAndCandlestickChart", width: "100%", height: "500" }))));
+                this.$render("i-panel", { id: "pnlCharts", width: "100%", minHeight: 500 })));
         }
     };
     ScomTradingChart = __decorate([

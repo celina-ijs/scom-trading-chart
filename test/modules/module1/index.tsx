@@ -9,7 +9,7 @@ export default class Module1 extends Module {
     constructor(parent?: Container, options?: any) {
         super(parent, options);
     }
-  
+
     init() {
         super.init();
         this.tradingChart = new ScomTradingChart(undefined, {
@@ -17,7 +17,13 @@ export default class Module1 extends Module {
             tokenAddress: 'Bitcoin',
             tokenSymbol: 'BTC',
             width: 1000
-        })
+        });
+        // setTimeout(() => {
+        //     this.tradingChart.setTag({
+        //         ...this.tradingChart.tag,
+        //         theme: 'dark'
+        //     })
+        // }, 5000);
         this.pnlMainTest.appendChild(this.tradingChart);
     }
 
