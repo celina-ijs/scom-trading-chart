@@ -58658,8 +58658,8 @@ define("@scom/scom-trading-chart", ["require", "exports", "@ijstech/components",
             super(parent, options);
             this.typeChart = 'price';
             this.duration = 1;
-            this._oldData = { tokenAddress: '', tokenSymbol: '', chainId: 0 };
-            this._data = { tokenAddress: '', tokenSymbol: '', chainId: 0 };
+            this._oldData = { cryptoName: '' };
+            this._data = { cryptoName: '' };
             this.oldTag = {};
             this.tag = {};
             this.defaultEdit = true;
@@ -58719,22 +58719,22 @@ define("@scom/scom-trading-chart", ["require", "exports", "@ijstech/components",
             const propertiesSchema = {
                 type: 'object',
                 properties: {
-                    tokenAddress: {
+                    cryptoName: {
                         type: 'string',
-                        required: true,
-                        readOnly
+                        enum: [
+                            'Bitcoin',
+                            'Ethereum',
+                            'XRP',
+                            'Cardano',
+                            'Dogecoin',
+                            'Polkadot',
+                            'Polygon',
+                            'Solana',
+                            'Uniswap',
+                            'Avalanche'
+                        ],
+                        required: true
                     },
-                    tokenSymbol: {
-                        type: 'string',
-                        required: true,
-                        readOnly
-                    },
-                    chainId: {
-                        type: 'number',
-                        enum: [0, 1, 56, 137, 250, 97, 80001, 43113, 43114],
-                        required: true,
-                        readOnly
-                    }
                 }
             };
             return propertiesSchema;
@@ -58816,16 +58816,10 @@ define("@scom/scom-trading-chart", ["require", "exports", "@ijstech/components",
         updateTitle() {
             if (!this._data || !this.lbTitle)
                 return;
-            const { tokenAddress, tokenSymbol } = this._data;
-            if (!tokenAddress)
+            const { cryptoName } = this._data;
+            if (!cryptoName)
                 return;
-            const address = tokenAddress.toLowerCase();
-            if (['btc', 'bitcoin'].includes(address)) {
-                this.lbTitle.caption = 'Bitcoin to USD Chart';
-            }
-            else {
-                this.lbTitle.caption = `${tokenSymbol} to USD Chart`;
-            }
+            this.lbTitle.caption = `${cryptoName} to USD Chart`;
         }
         convertToCandlestickData(data) {
             let candlestickData = [];
@@ -58891,7 +58885,7 @@ define("@scom/scom-trading-chart", ["require", "exports", "@ijstech/components",
         }
         getChartData() {
             // TODO - Use real data
-            // const { tokenAddress, chainId } = this._data;
+            // const { cryptoName } = this._data;
             let chartData;
             switch (this.duration) {
                 case 1:
@@ -59255,17 +59249,13 @@ define("@scom/scom-trading-chart", ["require", "exports", "@ijstech/components",
             if (((_a = this.tag) === null || _a === void 0 ? void 0 : _a.theme) === 'dark') {
                 this.classList.add('trading-chart--dark');
             }
-            const chainId = this.getAttribute('chainId', true, 0);
-            const tokenAddress = this.getAttribute('tokenAddress', true, '');
-            const tokenSymbol = this.getAttribute('tokenSymbol', true, '');
+            const cryptoName = this.getAttribute('cryptoName', true, '');
             const width = this.getAttribute('width', true);
             if (width) {
                 this.pnlTradingChart.width = width;
             }
             this.setData({
-                chainId,
-                tokenAddress,
-                tokenSymbol
+                cryptoName
             });
             window.addEventListener('resize', () => {
                 setTimeout(() => {

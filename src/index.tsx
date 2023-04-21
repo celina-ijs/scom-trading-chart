@@ -72,9 +72,7 @@ interface ICandlestickData {
 }
 
 interface TradingChartElement extends ControlElement {
-  tokenAddress: string;
-  tokenSymbol: string;
-  chainId?: string | number;
+  cryptoName: string;
   theme?: 'light' | 'dark';
 }
 
@@ -99,8 +97,8 @@ export default class ScomTradingChart extends Module implements PageBlock {
   private hStackSwitch: HStack;
   private hStackDuration: HStack;
 
-  private _oldData: IConfig = { tokenAddress: '', tokenSymbol: '', chainId: 0 };
-  private _data: IConfig = { tokenAddress: '', tokenSymbol: '', chainId: 0 };
+  private _oldData: IConfig = { cryptoName: '' };
+  private _data: IConfig = { cryptoName: '' };
   private oldTag: any = {};
   tag: any = {};
   defaultEdit: boolean = true;
@@ -176,22 +174,22 @@ export default class ScomTradingChart extends Module implements PageBlock {
     const propertiesSchema = {
       type: 'object',
       properties: {
-        tokenAddress: {
+        cryptoName: {
           type: 'string',
-          required: true,
-          readOnly
+          enum: [
+            'Bitcoin',
+            'Ethereum',
+            'XRP',
+            'Cardano',
+            'Dogecoin',
+            'Polkadot',
+            'Polygon',
+            'Solana',
+            'Uniswap',
+            'Avalanche'
+          ],
+          required: true
         },
-        tokenSymbol: {
-          type: 'string',
-          required: true,
-          readOnly
-        },
-        chainId: {
-          type: 'number',
-          enum: [0, 1, 56, 137, 250, 97, 80001, 43113, 43114],
-          required: true,
-          readOnly
-        }
       }
     }
     return propertiesSchema as IDataSchema;
@@ -273,14 +271,10 @@ export default class ScomTradingChart extends Module implements PageBlock {
 
   private updateTitle() {
     if (!this._data || !this.lbTitle) return;
-    const { tokenAddress, tokenSymbol } = this._data;
-    if (!tokenAddress) return;
-    const address = tokenAddress.toLowerCase();
-    if (['btc', 'bitcoin'].includes(address)) {
-      this.lbTitle.caption = 'Bitcoin to USD Chart';
-    } else {
-      this.lbTitle.caption = `${tokenSymbol} to USD Chart`;
-    }
+    const { cryptoName } = this._data;
+    if (!cryptoName) return;
+
+    this.lbTitle.caption = `${cryptoName} to USD Chart`;
   }
 
   private convertToCandlestickData(data: ICandlestickData[]) {
@@ -348,7 +342,7 @@ export default class ScomTradingChart extends Module implements PageBlock {
 
   private getChartData() {
     // TODO - Use real data
-    // const { tokenAddress, chainId } = this._data;
+    // const { cryptoName } = this._data;
     let chartData: { data: { points: { [key: string]: { v: number[] } } } };
     switch (this.duration) {
       case 1:
@@ -706,17 +700,13 @@ export default class ScomTradingChart extends Module implements PageBlock {
     if (this.tag?.theme === 'dark') {
       this.classList.add('trading-chart--dark');
     }
-    const chainId = this.getAttribute('chainId', true, 0);
-    const tokenAddress = this.getAttribute('tokenAddress', true, '');
-    const tokenSymbol = this.getAttribute('tokenSymbol', true, '');
+    const cryptoName = this.getAttribute('cryptoName', true, '');
     const width = this.getAttribute('width', true);
     if (width) {
       this.pnlTradingChart.width = width;
     }
     this.setData({
-      chainId,
-      tokenAddress,
-      tokenSymbol
+      cryptoName
     });
     window.addEventListener('resize', () => {
       setTimeout(() => {

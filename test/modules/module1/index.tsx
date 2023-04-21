@@ -13,9 +13,7 @@ export default class Module1 extends Module {
     init() {
         super.init();
         this.tradingChart = new ScomTradingChart(undefined, {
-            chainId: 0,
-            tokenAddress: 'Bitcoin',
-            tokenSymbol: 'BTC',
+            cryptoName: 'Bitcoin',
             width: 1000
         });
         // setTimeout(() => {

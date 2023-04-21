@@ -17,9 +17,7 @@ declare module "@scom/scom-trading-chart/store/interface.ts" {
         config: () => Promise<void>;
     }
     export interface IConfig {
-        tokenAddress: string;
-        tokenSymbol: string;
-        chainId: string | number;
+        cryptoName: string;
     }
 }
 /// <amd-module name="@scom/scom-trading-chart/store/dummy/day.json.ts" />
@@ -16781,9 +16779,7 @@ declare module "@scom/scom-trading-chart" {
     import { ControlElement, Module, Container, IDataSchema } from '@ijstech/components';
     import { IConfig, PageBlock } from "@scom/scom-trading-chart/store/index.ts";
     interface TradingChartElement extends ControlElement {
-        tokenAddress: string;
-        tokenSymbol: string;
-        chainId?: string | number;
+        cryptoName: string;
         theme?: 'light' | 'dark';
     }
     global {

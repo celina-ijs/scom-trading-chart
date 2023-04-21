@@ -22,7 +22,5 @@ export interface PageBlock {
 }
 
 export interface IConfig {
-  tokenAddress: string;
-  tokenSymbol: string;
-  chainId: string | number;
+  cryptoName: string;
 };
