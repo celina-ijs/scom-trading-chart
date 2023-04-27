@@ -23,4 +23,6 @@ export interface PageBlock {
 
 export interface IConfig {
   cryptoName: string;
+  showHeader?: boolean;
+  showFooter?: boolean;
 };

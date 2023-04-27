@@ -18,6 +18,8 @@ declare module "@scom/scom-trading-chart/store/interface.ts" {
     }
     export interface IConfig {
         cryptoName: string;
+        showHeader?: boolean;
+        showFooter?: boolean;
     }
 }
 /// <amd-module name="@scom/scom-trading-chart/store/dummy/day.json.ts" />
@@ -16781,6 +16783,8 @@ declare module "@scom/scom-trading-chart" {
     interface TradingChartElement extends ControlElement {
         cryptoName: string;
         theme?: 'light' | 'dark';
+        showHeader?: boolean;
+        showFooter?: boolean;
     }
     global {
         namespace JSX {
@@ -16799,6 +16803,7 @@ declare module "@scom/scom-trading-chart" {
         private hStackType;
         private hStackSwitch;
         private hStackDuration;
+        private dappContainer;
         private _oldData;
         private _data;
         private oldTag;
@@ -16809,6 +16814,10 @@ declare module "@scom/scom-trading-chart" {
         readonly onEdit: () => Promise<void>;
         static create(options?: TradingChartElement, parent?: Container): Promise<ScomTradingChart>;
         constructor(parent?: Container, options?: TradingChartElement);
+        get showFooter(): boolean;
+        set showFooter(value: boolean);
+        get showHeader(): boolean;
+        set showHeader(value: boolean);
         getData(): IConfig;
         setData(data: IConfig): Promise<void>;
         getTag(): any;

@@ -16,6 +16,9 @@ import {
 } from '@ijstech/components';
 import { IConfig, PageBlock } from './store/index';
 import { groupBtnStyle, tradingChartStyle } from './index.css';
+import {} from '@ijstech/eth-contract'
+import {} from '@ijstech/eth-wallet'
+import ScomDappContainer from '@scom/scom-dapp-container'
 
 // Dummy data
 import { day, week, month, threeMonths, year, all, historical, ytd } from './store/index';
@@ -74,6 +77,8 @@ interface ICandlestickData {
 interface TradingChartElement extends ControlElement {
   cryptoName: string;
   theme?: 'light' | 'dark';
+  showHeader?: boolean;
+  showFooter?: boolean;
 }
 
 declare global {
@@ -96,6 +101,7 @@ export default class ScomTradingChart extends Module implements PageBlock {
   private hStackType: HStack;
   private hStackSwitch: HStack;
   private hStackDuration: HStack;
+  private dappContainer: ScomDappContainer;
 
   private _oldData: IConfig = { cryptoName: '' };
   private _data: IConfig = { cryptoName: '' };
@@ -116,12 +122,32 @@ export default class ScomTradingChart extends Module implements PageBlock {
     super(parent, options);
   }
 
+  get showFooter() {
+    return this._data.showFooter ?? true
+  }
+  set showFooter(value: boolean) {
+    this._data.showFooter = value
+    if (this.dappContainer) this.dappContainer.showFooter = this.showFooter;
+  }
+
+  get showHeader() {
+    return this._data.showHeader ?? true
+  }
+  set showHeader(value: boolean) {
+    this._data.showHeader = value
+    if (this.dappContainer) this.dappContainer.showHeader = this.showHeader;
+  }
+
   getData() {
     return this._data;
   }
 
   async setData(data: IConfig) {
     this._data = data;
+    if (this.dappContainer) {
+      this.dappContainer.showHeader = this.showHeader;
+      this.dappContainer.showFooter = this.showFooter;
+    }
     this.updateTitle();
     this.updateChart();
   }
@@ -142,7 +168,7 @@ export default class ScomTradingChart extends Module implements PageBlock {
       this.updateChart();
       setTimeout(() => {
         this.resizeCharts();
-      }, 300);
+      }, 1000);
     }
   }
 
@@ -648,7 +674,7 @@ export default class ScomTradingChart extends Module implements PageBlock {
     if (isType || !this.chartElm) {
       this.pnlCharts.clearInnerHTML();
       this.chartElm = new LineChart(this.pnlCharts, {
-        width: '100%',
+        width: 'calc(100% - 10px)',
         height: 500,
         theme: theme || 'light',
         data: data
@@ -701,13 +727,18 @@ export default class ScomTradingChart extends Module implements PageBlock {
       this.classList.add('trading-chart--dark');
     }
     const cryptoName = this.getAttribute('cryptoName', true, '');
+    const showHeader = this.getAttribute('showHeader', true, true);
+    const showFooter = this.getAttribute('showFooter', true, true);
     const width = this.getAttribute('width', true);
     if (width) {
       this.pnlTradingChart.width = width;
     }
     this.setData({
-      cryptoName
+      cryptoName,
+      showHeader,
+      showFooter
     });
+
     window.addEventListener('resize', () => {
       setTimeout(() => {
         this.resizeCharts();
@@ -717,25 +748,27 @@ export default class ScomTradingChart extends Module implements PageBlock {
 
   render() {
     return (
-      <i-panel id="pnlTradingChart" minWidth={300} maxWidth="100%">
-        <i-hstack gap={20} wrap="wrap" width="100%" padding={{ top: 10, left: 20, right: 20 }}>
-          <i-label id="lbTitle" width="100%" font={{ bold: true, size: '18px', color: '#222531' }} />
-          <i-hstack id="hStackType" class={groupBtnStyle}>
-            <i-button caption="Price" class="chart-btn--active" onClick={(src: Button) => this.onTypeChange(src, 'price')} />
-            <i-button caption="Market Cap" onClick={(src: Button) => this.onTypeChange(src, 'market')} />
+      <i-scom-dapp-container id="dappContainer" showWalletNetwork={false} display="flex" height="100%" width="100%">
+        <i-panel id="pnlTradingChart" minWidth={300} maxWidth="100%">
+          <i-hstack gap={20} wrap="wrap" width="100%" padding={{ top: 10, left: 20, right: 20 }}>
+            <i-label id="lbTitle" width="100%" font={{ bold: true, size: '18px' }} />
+            <i-hstack id="hStackType" class={groupBtnStyle}>
+              <i-button caption="Price" class="chart-btn--active" onClick={(src: Button) => this.onTypeChange(src, 'price')} />
+              <i-button caption="Market Cap" onClick={(src: Button) => this.onTypeChange(src, 'market')} />
+            </i-hstack>
+            <i-hstack id="hStackSwitch" class={groupBtnStyle}>
+              <i-image url={assets.fullPath('img/line.svg')} class="chart-btn--active" onClick={(src: Image) => this.onTypeChange(src, 'price', true)} />
+              <i-image url={assets.fullPath('img/candlestick.svg')} onClick={(src: Image) => this.onTypeChange(src, 'candlestick', true)} />
+            </i-hstack>
+            <i-hstack id="hStackDuration" class={groupBtnStyle} margin={{ left: 'auto' }}>
+              {
+                durations.map((v, index) => <i-button caption={v.title} class={index === 0 ? 'chart-btn--active' : ''} onClick={(src: Button) => this.onDurationChange(src, v.value)} />)
+              }
+            </i-hstack>
           </i-hstack>
-          <i-hstack id="hStackSwitch" class={groupBtnStyle}>
-            <i-image url={assets.fullPath('img/line.svg')} class="chart-btn--active" onClick={(src: Image) => this.onTypeChange(src, 'price', true)} />
-            <i-image url={assets.fullPath('img/candlestick.svg')} onClick={(src: Image) => this.onTypeChange(src, 'candlestick', true)} />
-          </i-hstack>
-          <i-hstack id="hStackDuration" class={groupBtnStyle} margin={{ left: 'auto' }}>
-            {
-              durations.map((v, index) => <i-button caption={v.title} class={index === 0 ? 'chart-btn--active' : ''} onClick={(src: Button) => this.onDurationChange(src, v.value)} />)
-            }
-          </i-hstack>
-        </i-hstack>
-        <i-panel id="pnlCharts" width="100%" minHeight={500} />
-      </i-panel>
+          <i-panel id="pnlCharts" width="100%" minHeight={500} />
+        </i-panel>
+      </i-scom-dapp-container>
     )
   }
 }
