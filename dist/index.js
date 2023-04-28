@@ -58669,11 +58669,33 @@ define("@scom/scom-trading-chart", ["require", "exports", "@ijstech/components",
             await self.ready();
             return self;
         }
+        get showFooter() {
+            var _a;
+            return (_a = this._data.showFooter) !== null && _a !== void 0 ? _a : true;
+        }
+        set showFooter(value) {
+            this._data.showFooter = value;
+            if (this.dappContainer)
+                this.dappContainer.showFooter = this.showFooter;
+        }
+        get showHeader() {
+            var _a;
+            return (_a = this._data.showHeader) !== null && _a !== void 0 ? _a : true;
+        }
+        set showHeader(value) {
+            this._data.showHeader = value;
+            if (this.dappContainer)
+                this.dappContainer.showHeader = this.showHeader;
+        }
         getData() {
             return this._data;
         }
         async setData(data) {
             this._data = data;
+            if (this.dappContainer) {
+                this.dappContainer.showHeader = this.showHeader;
+                this.dappContainer.showFooter = this.showFooter;
+            }
             this.updateTitle();
             this.updateChart();
         }
@@ -58694,7 +58716,7 @@ define("@scom/scom-trading-chart", ["require", "exports", "@ijstech/components",
                 this.updateChart();
                 setTimeout(() => {
                     this.resizeCharts();
-                }, 300);
+                }, 1000);
             }
         }
         getConfigSchema() {
@@ -59195,7 +59217,7 @@ define("@scom/scom-trading-chart", ["require", "exports", "@ijstech/components",
             if (isType || !this.chartElm) {
                 this.pnlCharts.clearInnerHTML();
                 this.chartElm = new components_3.LineChart(this.pnlCharts, {
-                    width: '100%',
+                    width: 'calc(100% - 10px)',
                     height: 500,
                     theme: theme || 'light',
                     data: data
@@ -59250,12 +59272,16 @@ define("@scom/scom-trading-chart", ["require", "exports", "@ijstech/components",
                 this.classList.add('trading-chart--dark');
             }
             const cryptoName = this.getAttribute('cryptoName', true, '');
+            const showHeader = this.getAttribute('showHeader', true, true);
+            const showFooter = this.getAttribute('showFooter', true, true);
             const width = this.getAttribute('width', true);
             if (width) {
                 this.pnlTradingChart.width = width;
             }
             this.setData({
-                cryptoName
+                cryptoName,
+                showHeader,
+                showFooter
             });
             window.addEventListener('resize', () => {
                 setTimeout(() => {
@@ -59264,17 +59290,18 @@ define("@scom/scom-trading-chart", ["require", "exports", "@ijstech/components",
             });
         }
         render() {
-            return (this.$render("i-panel", { id: "pnlTradingChart", minWidth: 300, maxWidth: "100%" },
-                this.$render("i-hstack", { gap: 20, wrap: "wrap", width: "100%", padding: { top: 10, left: 20, right: 20 } },
-                    this.$render("i-label", { id: "lbTitle", width: "100%", font: { bold: true, size: '18px', color: '#222531' } }),
-                    this.$render("i-hstack", { id: "hStackType", class: index_css_1.groupBtnStyle },
-                        this.$render("i-button", { caption: "Price", class: "chart-btn--active", onClick: (src) => this.onTypeChange(src, 'price') }),
-                        this.$render("i-button", { caption: "Market Cap", onClick: (src) => this.onTypeChange(src, 'market') })),
-                    this.$render("i-hstack", { id: "hStackSwitch", class: index_css_1.groupBtnStyle },
-                        this.$render("i-image", { url: assets_1.default.fullPath('img/line.svg'), class: "chart-btn--active", onClick: (src) => this.onTypeChange(src, 'price', true) }),
-                        this.$render("i-image", { url: assets_1.default.fullPath('img/candlestick.svg'), onClick: (src) => this.onTypeChange(src, 'candlestick', true) })),
-                    this.$render("i-hstack", { id: "hStackDuration", class: index_css_1.groupBtnStyle, margin: { left: 'auto' } }, durations.map((v, index) => this.$render("i-button", { caption: v.title, class: index === 0 ? 'chart-btn--active' : '', onClick: (src) => this.onDurationChange(src, v.value) })))),
-                this.$render("i-panel", { id: "pnlCharts", width: "100%", minHeight: 500 })));
+            return (this.$render("i-scom-dapp-container", { id: "dappContainer", showWalletNetwork: false, display: "flex", height: "100%", width: "100%" },
+                this.$render("i-panel", { id: "pnlTradingChart", minWidth: 300, maxWidth: "100%" },
+                    this.$render("i-hstack", { gap: 20, wrap: "wrap", width: "100%", padding: { top: 10, left: 20, right: 20 } },
+                        this.$render("i-label", { id: "lbTitle", width: "100%", font: { bold: true, size: '18px' } }),
+                        this.$render("i-hstack", { id: "hStackType", class: index_css_1.groupBtnStyle },
+                            this.$render("i-button", { caption: "Price", class: "chart-btn--active", onClick: (src) => this.onTypeChange(src, 'price') }),
+                            this.$render("i-button", { caption: "Market Cap", onClick: (src) => this.onTypeChange(src, 'market') })),
+                        this.$render("i-hstack", { id: "hStackSwitch", class: index_css_1.groupBtnStyle },
+                            this.$render("i-image", { url: assets_1.default.fullPath('img/line.svg'), class: "chart-btn--active", onClick: (src) => this.onTypeChange(src, 'price', true) }),
+                            this.$render("i-image", { url: assets_1.default.fullPath('img/candlestick.svg'), onClick: (src) => this.onTypeChange(src, 'candlestick', true) })),
+                        this.$render("i-hstack", { id: "hStackDuration", class: index_css_1.groupBtnStyle, margin: { left: 'auto' } }, durations.map((v, index) => this.$render("i-button", { caption: v.title, class: index === 0 ? 'chart-btn--active' : '', onClick: (src) => this.onDurationChange(src, v.value) })))),
+                    this.$render("i-panel", { id: "pnlCharts", width: "100%", minHeight: 500 }))));
         }
     };
     ScomTradingChart = __decorate([
