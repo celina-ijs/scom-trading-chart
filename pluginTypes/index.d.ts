@@ -16779,7 +16779,6 @@ declare module "@scom/scom-trading-chart/assets.ts" {
 /// <amd-module name="@scom/scom-trading-chart" />
 declare module "@scom/scom-trading-chart" {
     import { ControlElement, Module, Container, IDataSchema } from '@ijstech/components';
-    import { IConfig, PageBlock } from "@scom/scom-trading-chart/store/index.ts";
     interface TradingChartElement extends ControlElement {
         cryptoName: string;
         theme?: 'light' | 'dark';
@@ -16793,7 +16792,7 @@ declare module "@scom/scom-trading-chart" {
             }
         }
     }
-    export default class ScomTradingChart extends Module implements PageBlock {
+    export default class ScomTradingChart extends Module {
         private pnlTradingChart;
         private lbTitle;
         private pnlCharts;
@@ -16818,47 +16817,30 @@ declare module "@scom/scom-trading-chart" {
         set showFooter(value: boolean);
         get showHeader(): boolean;
         set showHeader(value: boolean);
-        getData(): IConfig;
-        setData(data: IConfig): Promise<void>;
-        getTag(): any;
-        setTag(value: any): Promise<void>;
-        getConfigSchema(): IDataSchema;
-        onConfigSave(config: any): void;
-        edit(): Promise<void>;
-        confirm(): Promise<void>;
-        discard(): Promise<void>;
-        config(): Promise<void>;
+        private getData;
+        private setData;
+        private getTag;
+        private setTag;
         private getPropertiesSchema;
         private getThemeSchema;
-        getEmbedderActions(): {
+        private _getActions;
+        getConfigurators(): {
             name: string;
-            icon: string;
-            command: (builder: any, userInputData: any) => {
-                execute: () => Promise<void>;
-                undo: () => void;
-                redo: () => void;
-            };
-            userInputDataSchema: IDataSchema;
-        }[];
-        getActions(): {
-            name: string;
-            icon: string;
-            command: (builder: any, userInputData: any) => {
-                execute: () => Promise<void>;
-                undo: () => void;
-                redo: () => void;
-            };
-            userInputDataSchema: IDataSchema;
-        }[];
-        _getActions(propertiesSchema: IDataSchema, themeSchema: IDataSchema): {
-            name: string;
-            icon: string;
-            command: (builder: any, userInputData: any) => {
-                execute: () => Promise<void>;
-                undo: () => void;
-                redo: () => void;
-            };
-            userInputDataSchema: IDataSchema;
+            target: string;
+            getActions: () => {
+                name: string;
+                icon: string;
+                command: (builder: any, userInputData: any) => {
+                    execute: () => Promise<void>;
+                    undo: () => void;
+                    redo: () => void;
+                };
+                userInputDataSchema: IDataSchema;
+            }[];
+            getData: any;
+            setData: any;
+            getTag: any;
+            setTag: any;
         }[];
         private updateTitle;
         private convertToCandlestickData;
