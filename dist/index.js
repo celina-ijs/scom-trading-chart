@@ -58704,7 +58704,12 @@ define("@scom/scom-trading-chart", ["require", "exports", "@ijstech/components",
         }
         async setTag(value) {
             var _a;
-            this.tag = value;
+            const newValue = value || {};
+            for (let prop in newValue) {
+                if (newValue.hasOwnProperty(prop)) {
+                    this.tag[prop] = newValue[prop];
+                }
+            }
             this.width = this.tag.width;
             if (((_a = this.tag) === null || _a === void 0 ? void 0 : _a.theme) === 'dark') {
                 this.classList.add('trading-chart--dark');
@@ -58719,28 +58724,29 @@ define("@scom/scom-trading-chart", ["require", "exports", "@ijstech/components",
                 }, 1000);
             }
         }
-        getConfigSchema() {
-            return this.getThemeSchema();
-        }
-        onConfigSave(config) {
-            this.tag = config;
-            this.updateChart();
-        }
-        async edit() {
-            // this.pnlTradingChart.visible = false;
-        }
-        async confirm() {
-            this.updateChart();
-            // this.pnlTradingChart.visible = true;
-        }
-        async discard() {
-            // this.pnlTradingChart.visible = true;
-        }
-        async config() { }
+        // getConfigSchema() {
+        //   return this.getThemeSchema();
+        // }
+        // onConfigSave(config: any) {
+        //   this.tag = config;
+        //   this.updateChart();
+        // }
+        // async edit() {
+        //   // this.pnlTradingChart.visible = false;
+        // }
+        // async confirm() {
+        //   this.updateChart();
+        //   // this.pnlTradingChart.visible = true;
+        // }
+        // async discard() {
+        //   // this.pnlTradingChart.visible = true;
+        // }
+        // async config() { }
         getPropertiesSchema(readOnly) {
             const propertiesSchema = {
                 type: 'object',
                 properties: {
+                    required: ['cryptoName'],
                     cryptoName: {
                         type: 'string',
                         enum: [
@@ -58754,8 +58760,7 @@ define("@scom/scom-trading-chart", ["require", "exports", "@ijstech/components",
                             'Solana',
                             'Uniswap',
                             'Avalanche'
-                        ],
-                        required: true
+                        ]
                     },
                 }
             };
@@ -58780,12 +58785,6 @@ define("@scom/scom-trading-chart", ["require", "exports", "@ijstech/components",
                 }
             };
             return themeSchema;
-        }
-        getEmbedderActions() {
-            return this._getActions(this.getPropertiesSchema(true), this.getThemeSchema(true));
-        }
-        getActions() {
-            return this._getActions(this.getPropertiesSchema(), this.getThemeSchema());
         }
         _getActions(propertiesSchema, themeSchema) {
             const actions = [
@@ -58815,7 +58814,7 @@ define("@scom/scom-trading-chart", ["require", "exports", "@ijstech/components",
                             execute: async () => {
                                 if (!userInputData)
                                     return;
-                                this.oldTag = Object.assign({}, this.tag);
+                                this.oldTag = JSON.parse(JSON.stringify(this.tag));
                                 this.setTag(userInputData);
                                 if (builder)
                                     builder.setTag(userInputData);
@@ -58834,6 +58833,32 @@ define("@scom/scom-trading-chart", ["require", "exports", "@ijstech/components",
                 }
             ];
             return actions;
+        }
+        getConfigurators() {
+            return [
+                {
+                    name: 'Builder Configurator',
+                    target: 'Builders',
+                    getActions: () => {
+                        return this._getActions(this.getPropertiesSchema(), this.getThemeSchema());
+                    },
+                    getData: this.getData.bind(this),
+                    setData: this.setData.bind(this),
+                    getTag: this.getTag.bind(this),
+                    setTag: this.setTag.bind(this)
+                },
+                {
+                    name: 'Emdedder Configurator',
+                    target: 'Embedders',
+                    getActions: () => {
+                        return this._getActions(this.getPropertiesSchema(true), this.getThemeSchema(true));
+                    },
+                    getData: this.getData.bind(this),
+                    setData: this.setData.bind(this),
+                    getTag: this.getTag.bind(this),
+                    setTag: this.setTag.bind(this)
+                }
+            ];
         }
         updateTitle() {
             if (!this._data || !this.lbTitle)

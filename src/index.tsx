@@ -91,7 +91,7 @@ declare global {
 
 @customModule
 @customElements('i-scom-trading-chart')
-export default class ScomTradingChart extends Module implements PageBlock {
+export default class ScomTradingChart extends Module {
   private pnlTradingChart: Panel;
   private lbTitle: Label;
   private pnlCharts: Panel;
@@ -138,11 +138,11 @@ export default class ScomTradingChart extends Module implements PageBlock {
     if (this.dappContainer) this.dappContainer.showHeader = this.showHeader;
   }
 
-  getData() {
+  private getData() {
     return this._data;
   }
 
-  async setData(data: IConfig) {
+  private async setData(data: IConfig) {
     this._data = data;
     if (this.dappContainer) {
       this.dappContainer.showHeader = this.showHeader;
@@ -152,12 +152,17 @@ export default class ScomTradingChart extends Module implements PageBlock {
     this.updateChart();
   }
 
-  getTag() {
+  private getTag() {
     return this.tag;
   }
 
-  async setTag(value: any) {
-    this.tag = value;
+  private async setTag(value: any) {
+    const newValue = value || {};
+    for (let prop in newValue) {
+      if (newValue.hasOwnProperty(prop)) {
+        this.tag[prop] = newValue[prop];
+      }
+    }
     this.width = this.tag.width;
     if (this.tag?.theme === 'dark') {
       this.classList.add('trading-chart--dark');
@@ -172,34 +177,35 @@ export default class ScomTradingChart extends Module implements PageBlock {
     }
   }
 
-  getConfigSchema() {
-    return this.getThemeSchema();
-  }
+  // getConfigSchema() {
+  //   return this.getThemeSchema();
+  // }
 
-  onConfigSave(config: any) {
-    this.tag = config;
-    this.updateChart();
-  }
+  // onConfigSave(config: any) {
+  //   this.tag = config;
+  //   this.updateChart();
+  // }
 
-  async edit() {
-    // this.pnlTradingChart.visible = false;
-  }
+  // async edit() {
+  //   // this.pnlTradingChart.visible = false;
+  // }
 
-  async confirm() {
-    this.updateChart();
-    // this.pnlTradingChart.visible = true;
-  }
+  // async confirm() {
+  //   this.updateChart();
+  //   // this.pnlTradingChart.visible = true;
+  // }
 
-  async discard() {
-    // this.pnlTradingChart.visible = true;
-  }
+  // async discard() {
+  //   // this.pnlTradingChart.visible = true;
+  // }
 
-  async config() { }
+  // async config() { }
 
   private getPropertiesSchema(readOnly?: boolean) {
     const propertiesSchema = {
       type: 'object',
       properties: {
+        required: ['cryptoName'],
         cryptoName: {
           type: 'string',
           enum: [
@@ -213,8 +219,7 @@ export default class ScomTradingChart extends Module implements PageBlock {
             'Solana',
             'Uniswap',
             'Avalanche'
-          ],
-          required: true
+          ]
         },
       }
     }
@@ -242,15 +247,7 @@ export default class ScomTradingChart extends Module implements PageBlock {
     return themeSchema as IDataSchema;
   }
 
-  getEmbedderActions() {
-    return this._getActions(this.getPropertiesSchema(true), this.getThemeSchema(true));
-  }
-
-  getActions() {
-    return this._getActions(this.getPropertiesSchema(), this.getThemeSchema());
-  }
-
-  _getActions(propertiesSchema: IDataSchema, themeSchema: IDataSchema) {
+  private _getActions(propertiesSchema: IDataSchema, themeSchema: IDataSchema) {
     const actions = [
       {
         name: 'Settings',
@@ -277,7 +274,7 @@ export default class ScomTradingChart extends Module implements PageBlock {
           return {
             execute: async () => {
               if (!userInputData) return;
-              this.oldTag = { ...this.tag };
+              this.oldTag = JSON.parse(JSON.stringify(this.tag));
               this.setTag(userInputData);
               if (builder) builder.setTag(userInputData);
             },
@@ -293,6 +290,33 @@ export default class ScomTradingChart extends Module implements PageBlock {
       }
     ]
     return actions
+  }
+
+  getConfigurators() {
+    return [
+      {
+        name: 'Builder Configurator',
+        target: 'Builders',
+        getActions: () => {
+          return this._getActions(this.getPropertiesSchema(), this.getThemeSchema());
+        },
+        getData: this.getData.bind(this),
+        setData: this.setData.bind(this),
+        getTag: this.getTag.bind(this),
+        setTag: this.setTag.bind(this)
+      },
+      {
+        name: 'Emdedder Configurator',
+        target: 'Embedders',
+        getActions: () => {
+          return this._getActions(this.getPropertiesSchema(true), this.getThemeSchema(true))
+        },
+        getData: this.getData.bind(this),
+        setData: this.setData.bind(this),
+        getTag: this.getTag.bind(this),
+        setTag: this.setTag.bind(this)
+      }
+    ]
   }
 
   private updateTitle() {
