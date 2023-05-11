@@ -123,7 +123,7 @@ export default class ScomTradingChart extends Module {
   }
 
   get showFooter() {
-    return this._data.showFooter ?? true
+    return this._data.showFooter ?? false
   }
   set showFooter(value: boolean) {
     this._data.showFooter = value
@@ -131,7 +131,7 @@ export default class ScomTradingChart extends Module {
   }
 
   get showHeader() {
-    return this._data.showHeader ?? true
+    return this._data.showHeader ?? false
   }
   set showHeader(value: boolean) {
     this._data.showHeader = value
@@ -205,9 +205,9 @@ export default class ScomTradingChart extends Module {
     const propertiesSchema = {
       type: 'object',
       properties: {
-        required: ['cryptoName'],
         cryptoName: {
           type: 'string',
+          required: true,
           enum: [
             'Bitcoin',
             'Ethereum',
@@ -223,7 +223,7 @@ export default class ScomTradingChart extends Module {
         },
       }
     }
-    return propertiesSchema as IDataSchema;
+    return propertiesSchema as any;
   }
 
   private getThemeSchema(readOnly?: boolean) {
@@ -751,8 +751,8 @@ export default class ScomTradingChart extends Module {
       this.classList.add('trading-chart--dark');
     }
     const cryptoName = this.getAttribute('cryptoName', true, '');
-    const showHeader = this.getAttribute('showHeader', true, true);
-    const showFooter = this.getAttribute('showFooter', true, true);
+    const showHeader = this.getAttribute('showHeader', true, false);
+    const showFooter = this.getAttribute('showFooter', true, false);
     const width = this.getAttribute('width', true);
     if (width) {
       this.pnlTradingChart.width = width;

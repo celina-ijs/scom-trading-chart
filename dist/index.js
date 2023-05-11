@@ -58671,7 +58671,7 @@ define("@scom/scom-trading-chart", ["require", "exports", "@ijstech/components",
         }
         get showFooter() {
             var _a;
-            return (_a = this._data.showFooter) !== null && _a !== void 0 ? _a : true;
+            return (_a = this._data.showFooter) !== null && _a !== void 0 ? _a : false;
         }
         set showFooter(value) {
             this._data.showFooter = value;
@@ -58680,7 +58680,7 @@ define("@scom/scom-trading-chart", ["require", "exports", "@ijstech/components",
         }
         get showHeader() {
             var _a;
-            return (_a = this._data.showHeader) !== null && _a !== void 0 ? _a : true;
+            return (_a = this._data.showHeader) !== null && _a !== void 0 ? _a : false;
         }
         set showHeader(value) {
             this._data.showHeader = value;
@@ -58746,9 +58746,9 @@ define("@scom/scom-trading-chart", ["require", "exports", "@ijstech/components",
             const propertiesSchema = {
                 type: 'object',
                 properties: {
-                    required: ['cryptoName'],
                     cryptoName: {
                         type: 'string',
+                        required: true,
                         enum: [
                             'Bitcoin',
                             'Ethereum',
@@ -59297,8 +59297,8 @@ define("@scom/scom-trading-chart", ["require", "exports", "@ijstech/components",
                 this.classList.add('trading-chart--dark');
             }
             const cryptoName = this.getAttribute('cryptoName', true, '');
-            const showHeader = this.getAttribute('showHeader', true, true);
-            const showFooter = this.getAttribute('showFooter', true, true);
+            const showHeader = this.getAttribute('showHeader', true, false);
+            const showFooter = this.getAttribute('showFooter', true, false);
             const width = this.getAttribute('width', true);
             if (width) {
                 this.pnlTradingChart.width = width;
