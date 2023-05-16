@@ -1,23 +1,23 @@
 {
-    "name": "@scom/scom-trading-chart",
-    "version": "0.1.0",
-    "main": "dist/index.js",
-    "plugin": "dist",
-    "pluginTypes": "pluginTypes/index.d.ts",
-    "types": "types/index.d.ts",
-    "engines": {
-        "node": ">=18.0.0"
-    },
-    "dependencies": {
-        "@ijstech/components": "^0.1.39",
-        "@scom/scom-dapp-container": "https://github.com/scom-repos/scom-dapp-container.git"
-    },
-    "devDependencies": {
-        "@ijstech/compiler": "^0.1.22",
-        "typescript": "4.3.5"
-    },
-    "scripts": {
-        "build": "rm -rf dist && npx @ijstech/compiler",
-        "test": "cd test && npm run test && cd .."
-    }
+  "name": "@scom/scom-trading-chart",
+  "version": "0.1.1",
+  "main": "dist/index.js",
+  "plugin": "dist",
+  "pluginTypes": "pluginTypes/index.d.ts",
+  "types": "types/index.d.ts",
+  "engines": {
+    "node": ">=18.0.0"
+  },
+  "dependencies": {
+    "@ijstech/components": "^0.1.39",
+    "@scom/scom-dapp-container": "https://github.com/scom-repos/scom-dapp-container.git"
+  },
+  "devDependencies": {
+    "@ijstech/compiler": "^0.1.22",
+    "typescript": "4.3.5"
+  },
+  "scripts": {
+    "build": "rm -rf dist && npx @ijstech/compiler",
+    "test": "cd test && npm run test && cd .."
+  }
 }
