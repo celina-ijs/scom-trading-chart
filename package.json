@@ -10,7 +10,7 @@
   },
   "dependencies": {
     "@ijstech/components": "^0.1.39",
-    "@scom/scom-dapp-container": "https://github.com/scom-repos/scom-dapp-container.git"
+    "@scom/scom-dapp-container": "^0.1.4"
   },
   "devDependencies": {
     "@ijstech/compiler": "^0.1.22",
