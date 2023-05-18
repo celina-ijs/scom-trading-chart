@@ -26,3 +26,38 @@ export interface IConfig {
   showHeader?: boolean;
   showFooter?: boolean;
 };
+
+export interface IPriceOrMarket {
+  price: [number, number][];
+  market: [number, number][];
+  vol: number[];
+  minPrice: number;
+  maxPrice: number;
+  minMarket: number;
+  maxMarket: number;
+}
+
+export interface ICandlestick {
+  candlestickData: {
+    name: string;
+    value: number[];
+  }[],
+  minPrice: number;
+  maxPrice: number;
+}
+
+export interface ICandlestickData {
+  timeOpen: string;
+  timeClose: string;
+  timeHigh: string;
+  timeLow: string;
+  quote: {
+    open: number;
+    high: number;
+    low: number;
+    close: number;
+    volume: number;
+    marketCap: number;
+    timestamp: string;
+  }
+}

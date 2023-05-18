@@ -1,29 +1,10 @@
-/// <amd-module name="@scom/scom-trading-chart/store/interface.ts" />
-declare module "@scom/scom-trading-chart/store/interface.ts" {
-    export interface PageBlock {
-        getData: () => any;
-        setData: (data: any) => Promise<void>;
-        getTag: () => any;
-        setTag: (tag: any) => Promise<void>;
-        validate?: () => boolean;
-        defaultEdit?: boolean;
-        tag?: any;
-        readonly onEdit: () => Promise<void>;
-        readonly onConfirm: () => Promise<void>;
-        readonly onDiscard: () => Promise<void>;
-        edit: () => Promise<void>;
-        confirm: () => Promise<void>;
-        discard: () => Promise<void>;
-        config: () => Promise<void>;
-    }
-    export interface IConfig {
-        cryptoName: string;
-        showHeader?: boolean;
-        showFooter?: boolean;
-    }
+/// <amd-module name="@scom/scom-trading-chart/index.css.ts" />
+declare module "@scom/scom-trading-chart/index.css.ts" {
+    export const groupBtnStyle: string;
+    export const tradingChartStyle: string;
 }
-/// <amd-module name="@scom/scom-trading-chart/store/dummy/day.json.ts" />
-declare module "@scom/scom-trading-chart/store/dummy/day.json.ts" {
+/// <amd-module name="@scom/scom-trading-chart/global/dummy/day.json.ts" />
+declare module "@scom/scom-trading-chart/global/dummy/day.json.ts" {
     export const day: {
         data: {
             points: {
@@ -1157,8 +1138,8 @@ declare module "@scom/scom-trading-chart/store/dummy/day.json.ts" {
         };
     };
 }
-/// <amd-module name="@scom/scom-trading-chart/store/dummy/week.json.ts" />
-declare module "@scom/scom-trading-chart/store/dummy/week.json.ts" {
+/// <amd-module name="@scom/scom-trading-chart/global/dummy/week.json.ts" />
+declare module "@scom/scom-trading-chart/global/dummy/week.json.ts" {
     export const week: {
         data: {
             points: {
@@ -3964,8 +3945,8 @@ declare module "@scom/scom-trading-chart/store/dummy/week.json.ts" {
         };
     };
 }
-/// <amd-module name="@scom/scom-trading-chart/store/dummy/month.json.ts" />
-declare module "@scom/scom-trading-chart/store/dummy/month.json.ts" {
+/// <amd-module name="@scom/scom-trading-chart/global/dummy/month.json.ts" />
+declare module "@scom/scom-trading-chart/global/dummy/month.json.ts" {
     export const month: {
         data: {
             points: {
@@ -6783,8 +6764,8 @@ declare module "@scom/scom-trading-chart/store/dummy/month.json.ts" {
         };
     };
 }
-/// <amd-module name="@scom/scom-trading-chart/store/dummy/3-months.json.ts" />
-declare module "@scom/scom-trading-chart/store/dummy/3-months.json.ts" {
+/// <amd-module name="@scom/scom-trading-chart/global/dummy/3-months.json.ts" />
+declare module "@scom/scom-trading-chart/global/dummy/3-months.json.ts" {
     export const threeMonths: {
         data: {
             points: {
@@ -9602,8 +9583,8 @@ declare module "@scom/scom-trading-chart/store/dummy/3-months.json.ts" {
         };
     };
 }
-/// <amd-module name="@scom/scom-trading-chart/store/dummy/year.json.ts" />
-declare module "@scom/scom-trading-chart/store/dummy/year.json.ts" {
+/// <amd-module name="@scom/scom-trading-chart/global/dummy/year.json.ts" />
+declare module "@scom/scom-trading-chart/global/dummy/year.json.ts" {
     export const year: {
         data: {
             points: {
@@ -11077,8 +11058,8 @@ declare module "@scom/scom-trading-chart/store/dummy/year.json.ts" {
         };
     };
 }
-/// <amd-module name="@scom/scom-trading-chart/store/dummy/all.json.ts" />
-declare module "@scom/scom-trading-chart/store/dummy/all.json.ts" {
+/// <amd-module name="@scom/scom-trading-chart/global/dummy/all.json.ts" />
+declare module "@scom/scom-trading-chart/global/dummy/all.json.ts" {
     export const all: {
         data: {
             points: {
@@ -13896,8 +13877,8 @@ declare module "@scom/scom-trading-chart/store/dummy/all.json.ts" {
         };
     };
 }
-/// <amd-module name="@scom/scom-trading-chart/store/dummy/historical.json.ts" />
-declare module "@scom/scom-trading-chart/store/dummy/historical.json.ts" {
+/// <amd-module name="@scom/scom-trading-chart/global/dummy/historical.json.ts" />
+declare module "@scom/scom-trading-chart/global/dummy/historical.json.ts" {
     export const historical: {
         data: {
             id: number;
@@ -13928,8 +13909,8 @@ declare module "@scom/scom-trading-chart/store/dummy/historical.json.ts" {
         };
     };
 }
-/// <amd-module name="@scom/scom-trading-chart/store/dummy/ytd.json.ts" />
-declare module "@scom/scom-trading-chart/store/dummy/ytd.json.ts" {
+/// <amd-module name="@scom/scom-trading-chart/global/dummy/ytd.json.ts" />
+declare module "@scom/scom-trading-chart/global/dummy/ytd.json.ts" {
     export const ytd: {
         data: {
             points: {
@@ -16747,26 +16728,80 @@ declare module "@scom/scom-trading-chart/store/dummy/ytd.json.ts" {
         };
     };
 }
-/// <amd-module name="@scom/scom-trading-chart/store/dummy/index.ts" />
-declare module "@scom/scom-trading-chart/store/dummy/index.ts" {
-    export { day } from "@scom/scom-trading-chart/store/dummy/day.json.ts";
-    export { week } from "@scom/scom-trading-chart/store/dummy/week.json.ts";
-    export { month } from "@scom/scom-trading-chart/store/dummy/month.json.ts";
-    export { threeMonths } from "@scom/scom-trading-chart/store/dummy/3-months.json.ts";
-    export { year } from "@scom/scom-trading-chart/store/dummy/year.json.ts";
-    export { all } from "@scom/scom-trading-chart/store/dummy/all.json.ts";
-    export { historical } from "@scom/scom-trading-chart/store/dummy/historical.json.ts";
-    export { ytd } from "@scom/scom-trading-chart/store/dummy/ytd.json.ts";
+/// <amd-module name="@scom/scom-trading-chart/global/dummy/index.ts" />
+declare module "@scom/scom-trading-chart/global/dummy/index.ts" {
+    export { day } from "@scom/scom-trading-chart/global/dummy/day.json.ts";
+    export { week } from "@scom/scom-trading-chart/global/dummy/week.json.ts";
+    export { month } from "@scom/scom-trading-chart/global/dummy/month.json.ts";
+    export { threeMonths } from "@scom/scom-trading-chart/global/dummy/3-months.json.ts";
+    export { year } from "@scom/scom-trading-chart/global/dummy/year.json.ts";
+    export { all } from "@scom/scom-trading-chart/global/dummy/all.json.ts";
+    export { historical } from "@scom/scom-trading-chart/global/dummy/historical.json.ts";
+    export { ytd } from "@scom/scom-trading-chart/global/dummy/ytd.json.ts";
 }
-/// <amd-module name="@scom/scom-trading-chart/store/index.ts" />
-declare module "@scom/scom-trading-chart/store/index.ts" {
-    export { PageBlock, IConfig } from "@scom/scom-trading-chart/store/interface.ts";
-    export * from "@scom/scom-trading-chart/store/dummy/index.ts";
+/// <amd-module name="@scom/scom-trading-chart/global/interface.ts" />
+declare module "@scom/scom-trading-chart/global/interface.ts" {
+    export interface PageBlock {
+        getData: () => any;
+        setData: (data: any) => Promise<void>;
+        getTag: () => any;
+        setTag: (tag: any) => Promise<void>;
+        validate?: () => boolean;
+        defaultEdit?: boolean;
+        tag?: any;
+        readonly onEdit: () => Promise<void>;
+        readonly onConfirm: () => Promise<void>;
+        readonly onDiscard: () => Promise<void>;
+        edit: () => Promise<void>;
+        confirm: () => Promise<void>;
+        discard: () => Promise<void>;
+        config: () => Promise<void>;
+    }
+    export interface IConfig {
+        cryptoName: string;
+        showHeader?: boolean;
+        showFooter?: boolean;
+    }
+    export interface IPriceOrMarket {
+        price: [number, number][];
+        market: [number, number][];
+        vol: number[];
+        minPrice: number;
+        maxPrice: number;
+        minMarket: number;
+        maxMarket: number;
+    }
+    export interface ICandlestick {
+        candlestickData: {
+            name: string;
+            value: number[];
+        }[];
+        minPrice: number;
+        maxPrice: number;
+    }
+    export interface ICandlestickData {
+        timeOpen: string;
+        timeClose: string;
+        timeHigh: string;
+        timeLow: string;
+        quote: {
+            open: number;
+            high: number;
+            low: number;
+            close: number;
+            volume: number;
+            marketCap: number;
+            timestamp: string;
+        };
+    }
 }
-/// <amd-module name="@scom/scom-trading-chart/index.css.ts" />
-declare module "@scom/scom-trading-chart/index.css.ts" {
-    export const groupBtnStyle: string;
-    export const tradingChartStyle: string;
+/// <amd-module name="@scom/scom-trading-chart/global/index.ts" />
+declare module "@scom/scom-trading-chart/global/index.ts" {
+    export * from "@scom/scom-trading-chart/global/interface.ts";
+    export const API_ENDPOINT = "https://api.coinmarketcap.com/data-api/v3/cryptocurrency/";
+    export type IType = 'price' | 'market' | 'candlestick';
+    export type IDuration = '1D' | '7D' | '1M' | '3M' | '1Y' | 'ALL';
+    export const callAPI: (name: string, type: IType, duration: IDuration) => Promise<any>;
 }
 /// <amd-module name="@scom/scom-trading-chart/assets.ts" />
 declare module "@scom/scom-trading-chart/assets.ts" {
@@ -16803,9 +16838,8 @@ declare module "@scom/scom-trading-chart" {
         private hStackSwitch;
         private hStackDuration;
         private dappContainer;
-        private _oldData;
+        private currentChartData;
         private _data;
-        private oldTag;
         tag: any;
         defaultEdit: boolean;
         readonly onConfirm: () => Promise<void>;

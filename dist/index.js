@@ -14,16 +14,59 @@ var __decorate = (this && this.__decorate) || function (decorators, target, key,
     else for (var i = decorators.length - 1; i >= 0; i--) if (d = decorators[i]) r = (c < 3 ? d(r) : c > 3 ? d(target, key, r) : d(target, key)) || r;
     return c > 3 && r && Object.defineProperty(target, key, r), r;
 };
-define("@scom/scom-trading-chart/store/interface.ts", ["require", "exports"], function (require, exports) {
+define("@scom/scom-trading-chart/index.css.ts", ["require", "exports", "@ijstech/components"], function (require, exports, components_1) {
     "use strict";
     Object.defineProperty(exports, "__esModule", { value: true });
-    ;
+    exports.tradingChartStyle = exports.groupBtnStyle = void 0;
+    const defaultBtn = {
+        padding: '7px 9px',
+        borderRadius: '6px',
+        transition: 'all 0.1s ease 0s',
+        background: 'transparent !important',
+        color: '#58667e',
+        boxShadow: 'none',
+        fontSize: '14px',
+        lineHeight: '16px',
+        fontWeight: 600,
+        cursor: 'pointer'
+    };
+    exports.groupBtnStyle = components_1.Styles.style({
+        background: '#eff2f5',
+        padding: '3px',
+        borderRadius: '8px',
+        alignItems: 'center',
+        $nest: {
+            'i-button': defaultBtn,
+            'i-image': Object.assign(Object.assign({}, defaultBtn), { paddingBlock: 6.3 }),
+            'i-button.chart-btn--active': {
+                background: '#fff !important',
+                cursor: 'default'
+            },
+            'i-image.chart-btn--active': {
+                background: '#fff !important',
+                cursor: 'default'
+            }
+        }
+    });
+    exports.tradingChartStyle = components_1.Styles.style({
+        display: 'block',
+        $nest: {
+            '&.trading-chart--dark': {
+                background: '#100c2a',
+                $nest: {
+                    '#lbTitle': {
+                        color: '#fff !important'
+                    }
+                }
+            }
+        }
+    });
 });
-define("@scom/scom-trading-chart/store/dummy/day.json.ts", ["require", "exports"], function (require, exports) {
+define("@scom/scom-trading-chart/global/dummy/day.json.ts", ["require", "exports"], function (require, exports) {
     "use strict";
     Object.defineProperty(exports, "__esModule", { value: true });
     exports.day = void 0;
-    ///<amd-module name='@scom/scom-trading-chart/store/dummy/day.json.ts'/> 
+    ///<amd-module name='@scom/scom-trading-chart/global/dummy/day.json.ts'/> 
     exports.day = {
         "data": {
             "points": {
@@ -3953,11 +3996,11 @@ define("@scom/scom-trading-chart/store/dummy/day.json.ts", ["require", "exports"
         }
     };
 });
-define("@scom/scom-trading-chart/store/dummy/week.json.ts", ["require", "exports"], function (require, exports) {
+define("@scom/scom-trading-chart/global/dummy/week.json.ts", ["require", "exports"], function (require, exports) {
     "use strict";
     Object.defineProperty(exports, "__esModule", { value: true });
     exports.week = void 0;
-    ///<amd-module name='@scom/scom-trading-chart/store/dummy/week.json.ts'/> 
+    ///<amd-module name='@scom/scom-trading-chart/global/dummy/week.json.ts'/> 
     exports.week = {
         "data": {
             "points": {
@@ -13739,11 +13782,11 @@ define("@scom/scom-trading-chart/store/dummy/week.json.ts", ["require", "exports
         }
     };
 });
-define("@scom/scom-trading-chart/store/dummy/month.json.ts", ["require", "exports"], function (require, exports) {
+define("@scom/scom-trading-chart/global/dummy/month.json.ts", ["require", "exports"], function (require, exports) {
     "use strict";
     Object.defineProperty(exports, "__esModule", { value: true });
     exports.month = void 0;
-    ///<amd-module name='@scom/scom-trading-chart/store/dummy/month.json.ts'/> 
+    ///<amd-module name='@scom/scom-trading-chart/global/dummy/month.json.ts'/> 
     exports.month = {
         "data": {
             "points": {
@@ -23567,11 +23610,11 @@ define("@scom/scom-trading-chart/store/dummy/month.json.ts", ["require", "export
         }
     };
 });
-define("@scom/scom-trading-chart/store/dummy/3-months.json.ts", ["require", "exports"], function (require, exports) {
+define("@scom/scom-trading-chart/global/dummy/3-months.json.ts", ["require", "exports"], function (require, exports) {
     "use strict";
     Object.defineProperty(exports, "__esModule", { value: true });
     exports.threeMonths = void 0;
-    ///<amd-module name='@scom/scom-trading-chart/store/dummy/3-months.json.ts'/> 
+    ///<amd-module name='@scom/scom-trading-chart/global/dummy/3-months.json.ts'/> 
     exports.threeMonths = {
         "data": {
             "points": {
@@ -33395,11 +33438,11 @@ define("@scom/scom-trading-chart/store/dummy/3-months.json.ts", ["require", "exp
         }
     };
 });
-define("@scom/scom-trading-chart/store/dummy/year.json.ts", ["require", "exports"], function (require, exports) {
+define("@scom/scom-trading-chart/global/dummy/year.json.ts", ["require", "exports"], function (require, exports) {
     "use strict";
     Object.defineProperty(exports, "__esModule", { value: true });
     exports.year = void 0;
-    ///<amd-module name='@scom/scom-trading-chart/store/dummy/year.json.ts'/> 
+    ///<amd-module name='@scom/scom-trading-chart/global/dummy/year.json.ts'/> 
     exports.year = {
         "data": {
             "points": {
@@ -38519,11 +38562,11 @@ define("@scom/scom-trading-chart/store/dummy/year.json.ts", ["require", "exports
         }
     };
 });
-define("@scom/scom-trading-chart/store/dummy/all.json.ts", ["require", "exports"], function (require, exports) {
+define("@scom/scom-trading-chart/global/dummy/all.json.ts", ["require", "exports"], function (require, exports) {
     "use strict";
     Object.defineProperty(exports, "__esModule", { value: true });
     exports.all = void 0;
-    ///<amd-module name='@scom/scom-trading-chart/store/dummy/all.json.ts'/> 
+    ///<amd-module name='@scom/scom-trading-chart/global/dummy/all.json.ts'/> 
     exports.all = {
         "data": {
             "points": {
@@ -48347,11 +48390,11 @@ define("@scom/scom-trading-chart/store/dummy/all.json.ts", ["require", "exports"
         }
     };
 });
-define("@scom/scom-trading-chart/store/dummy/historical.json.ts", ["require", "exports"], function (require, exports) {
+define("@scom/scom-trading-chart/global/dummy/historical.json.ts", ["require", "exports"], function (require, exports) {
     "use strict";
     Object.defineProperty(exports, "__esModule", { value: true });
     exports.historical = void 0;
-    ///<amd-module name='@scom/scom-trading-chart/store/dummy/historical.json.ts'/> 
+    ///<amd-module name='@scom/scom-trading-chart/global/dummy/historical.json.ts'/> 
     exports.historical = {
         "data": {
             "id": 1,
@@ -48714,11 +48757,11 @@ define("@scom/scom-trading-chart/store/dummy/historical.json.ts", ["require", "e
         }
     };
 });
-define("@scom/scom-trading-chart/store/dummy/ytd.json.ts", ["require", "exports"], function (require, exports) {
+define("@scom/scom-trading-chart/global/dummy/ytd.json.ts", ["require", "exports"], function (require, exports) {
     "use strict";
     Object.defineProperty(exports, "__esModule", { value: true });
     exports.ytd = void 0;
-    ///<amd-module name='@scom/scom-trading-chart/store/dummy/ytd.json.ts'/> 
+    ///<amd-module name='@scom/scom-trading-chart/global/dummy/ytd.json.ts'/> 
     exports.ytd = {
         "data": {
             "points": {
@@ -58542,7 +58585,7 @@ define("@scom/scom-trading-chart/store/dummy/ytd.json.ts", ["require", "exports"
         }
     };
 });
-define("@scom/scom-trading-chart/store/dummy/index.ts", ["require", "exports", "@scom/scom-trading-chart/store/dummy/day.json.ts", "@scom/scom-trading-chart/store/dummy/week.json.ts", "@scom/scom-trading-chart/store/dummy/month.json.ts", "@scom/scom-trading-chart/store/dummy/3-months.json.ts", "@scom/scom-trading-chart/store/dummy/year.json.ts", "@scom/scom-trading-chart/store/dummy/all.json.ts", "@scom/scom-trading-chart/store/dummy/historical.json.ts", "@scom/scom-trading-chart/store/dummy/ytd.json.ts"], function (require, exports, day_json_1, week_json_1, month_json_1, _3_months_json_1, year_json_1, all_json_1, historical_json_1, ytd_json_1) {
+define("@scom/scom-trading-chart/global/dummy/index.ts", ["require", "exports", "@scom/scom-trading-chart/global/dummy/day.json.ts", "@scom/scom-trading-chart/global/dummy/week.json.ts", "@scom/scom-trading-chart/global/dummy/month.json.ts", "@scom/scom-trading-chart/global/dummy/3-months.json.ts", "@scom/scom-trading-chart/global/dummy/year.json.ts", "@scom/scom-trading-chart/global/dummy/all.json.ts", "@scom/scom-trading-chart/global/dummy/historical.json.ts", "@scom/scom-trading-chart/global/dummy/ytd.json.ts"], function (require, exports, day_json_1, week_json_1, month_json_1, _3_months_json_1, year_json_1, all_json_1, historical_json_1, ytd_json_1) {
     "use strict";
     Object.defineProperty(exports, "__esModule", { value: true });
     exports.ytd = exports.historical = exports.all = exports.year = exports.threeMonths = exports.month = exports.week = exports.day = void 0;
@@ -58555,63 +58598,92 @@ define("@scom/scom-trading-chart/store/dummy/index.ts", ["require", "exports", "
     Object.defineProperty(exports, "historical", { enumerable: true, get: function () { return historical_json_1.historical; } });
     Object.defineProperty(exports, "ytd", { enumerable: true, get: function () { return ytd_json_1.ytd; } });
 });
-define("@scom/scom-trading-chart/store/index.ts", ["require", "exports", "@scom/scom-trading-chart/store/dummy/index.ts"], function (require, exports, index_1) {
+define("@scom/scom-trading-chart/global/interface.ts", ["require", "exports"], function (require, exports) {
     "use strict";
     Object.defineProperty(exports, "__esModule", { value: true });
-    __exportStar(index_1, exports);
+    ;
 });
-define("@scom/scom-trading-chart/index.css.ts", ["require", "exports", "@ijstech/components"], function (require, exports, components_1) {
+define("@scom/scom-trading-chart/global/index.ts", ["require", "exports", "@ijstech/components", "@scom/scom-trading-chart/global/dummy/index.ts", "@scom/scom-trading-chart/global/interface.ts"], function (require, exports, components_2, index_1, interface_1) {
     "use strict";
     Object.defineProperty(exports, "__esModule", { value: true });
-    exports.tradingChartStyle = exports.groupBtnStyle = void 0;
-    const defaultBtn = {
-        padding: '7px 9px',
-        borderRadius: '6px',
-        transition: 'all 0.1s ease 0s',
-        background: 'transparent !important',
-        color: '#58667e',
-        boxShadow: 'none',
-        fontSize: '14px',
-        lineHeight: '16px',
-        fontWeight: 600,
-        cursor: 'pointer'
+    exports.callAPI = exports.API_ENDPOINT = void 0;
+    __exportStar(interface_1, exports);
+    exports.API_ENDPOINT = 'https://api.coinmarketcap.com/data-api/v3/cryptocurrency/';
+    const TIME_START_ALL = 1278979200;
+    const convertId = 2781;
+    const getTimeStart = (duration) => {
+        switch (duration) {
+            case '1D':
+                return components_2.moment().subtract(1, 'day').unix();
+            case '7D':
+                return components_2.moment().subtract(1, 'week').unix();
+            case '1M':
+                return components_2.moment().subtract(1, 'month').unix();
+            case '3M':
+                return components_2.moment().subtract(3, 'months').unix();
+            case '1Y':
+                return components_2.moment().subtract(1, 'year').unix();
+            case 'ALL':
+                return TIME_START_ALL;
+            default:
+                break;
+        }
     };
-    exports.groupBtnStyle = components_1.Styles.style({
-        background: '#eff2f5',
-        padding: '3px',
-        borderRadius: '8px',
-        alignItems: 'center',
-        $nest: {
-            'i-button': defaultBtn,
-            'i-image': Object.assign(Object.assign({}, defaultBtn), { paddingBlock: 6.3 }),
-            'i-button.chart-btn--active': {
-                background: '#fff !important',
-                cursor: 'default'
-            },
-            'i-image.chart-btn--active': {
-                background: '#fff !important',
-                cursor: 'default'
-            }
+    const getInterval = (duration) => {
+        switch (duration) {
+            case '1D':
+            case '7D':
+            case '1M':
+                return '1hr';
+            default:
+                return 'daily';
         }
-    });
-    exports.tradingChartStyle = components_1.Styles.style({
-        display: 'block',
-        $nest: {
-            '&.trading-chart--dark': {
-                background: '#100c2a',
-                $nest: {
-                    '#lbTitle': {
-                        color: '#fff !important'
-                    }
-                }
-            }
+    };
+    const callAPI = async (name, type, duration) => {
+        if (!name || !type || !duration)
+            return {};
+        // Param name should be replaced with an id
+        const prefix = type === 'candlestick' ?
+            `historical?name=${name}&timeStart=${getTimeStart(duration)}&timeEnd=${components_2.moment().unix()}&interval=${getInterval(duration)}&convertId=${convertId}` :
+            `detail/chart?name=${name}&range=${duration}`;
+        try {
+            const response = await fetch(`${exports.API_ENDPOINT}${prefix}`);
+            const jsonData = await response.json();
+            return type === 'candlestick' ? jsonData.data.quotes : jsonData.data.points || {};
         }
-    });
+        catch (error) {
+            console.log(error);
+            // This line will be removed when the API is ready
+            return dummyData(type, duration);
+        }
+        return {};
+    };
+    exports.callAPI = callAPI;
+    const dummyData = (type, duration) => {
+        if (type === 'candlestick')
+            return index_1.historical.data.quotes;
+        switch (duration) {
+            case '1D':
+                return index_1.day.data.points;
+            case '7D':
+                return index_1.week.data.points;
+            case '1M':
+                return index_1.month.data.points;
+            case '3M':
+                return index_1.threeMonths.data.points;
+            case '1Y':
+                return index_1.year.data.points;
+            case 'ALL':
+                return index_1.all.data.points;
+            default:
+                return {};
+        }
+    };
 });
-define("@scom/scom-trading-chart/assets.ts", ["require", "exports", "@ijstech/components"], function (require, exports, components_2) {
+define("@scom/scom-trading-chart/assets.ts", ["require", "exports", "@ijstech/components"], function (require, exports, components_3) {
     "use strict";
     Object.defineProperty(exports, "__esModule", { value: true });
-    const moduleDir = components_2.application.currentModuleDir;
+    const moduleDir = components_3.application.currentModuleDir;
     function fullPath(path) {
         return `${moduleDir}/${path}`;
     }
@@ -58620,47 +58692,41 @@ define("@scom/scom-trading-chart/assets.ts", ["require", "exports", "@ijstech/co
         fullPath
     };
 });
-define("@scom/scom-trading-chart", ["require", "exports", "@ijstech/components", "@scom/scom-trading-chart/index.css.ts", "@scom/scom-trading-chart/store/index.ts", "@scom/scom-trading-chart/assets.ts"], function (require, exports, components_3, index_css_1, index_2, assets_1) {
+define("@scom/scom-trading-chart", ["require", "exports", "@ijstech/components", "@scom/scom-trading-chart/index.css.ts", "@scom/scom-trading-chart/global/index.ts", "@scom/scom-trading-chart/assets.ts"], function (require, exports, components_4, index_css_1, index_2, assets_1) {
     "use strict";
     Object.defineProperty(exports, "__esModule", { value: true });
     const durations = [
         {
             title: '1D',
-            value: 1
+            value: '1D'
         },
         {
             title: '7D',
-            value: 7
+            value: '7D'
         },
         {
             title: '1M',
-            value: 30
+            value: '1M'
         },
         {
             title: '3M',
-            value: 90
+            value: '3M'
         },
         {
             title: '1Y',
-            value: 365
-        },
-        {
-            title: 'YTD',
-            value: 'YTD'
+            value: '1Y'
         },
         {
             title: 'ALL',
-            value: 'All'
+            value: 'ALL'
         }
     ];
-    let ScomTradingChart = class ScomTradingChart extends components_3.Module {
+    let ScomTradingChart = class ScomTradingChart extends components_4.Module {
         constructor(parent, options) {
             super(parent, options);
             this.typeChart = 'price';
-            this.duration = 1;
-            this._oldData = { cryptoName: '' };
+            this.duration = '1D';
             this._data = { cryptoName: '' };
-            this.oldTag = {};
             this.tag = {};
             this.defaultEdit = true;
         }
@@ -58711,6 +58777,7 @@ define("@scom/scom-trading-chart", ["require", "exports", "@ijstech/components",
                 }
             }
             this.width = this.tag.width;
+            this.maxWidth = '100%';
             if (((_a = this.tag) === null || _a === void 0 ? void 0 : _a.theme) === 'dark') {
                 this.classList.add('trading-chart--dark');
             }
@@ -58718,7 +58785,7 @@ define("@scom/scom-trading-chart", ["require", "exports", "@ijstech/components",
                 this.classList.remove('trading-chart--dark');
             }
             if (this.pnlTradingChart) {
-                this.updateChart();
+                this.updateChart(true);
                 setTimeout(() => {
                     this.resizeCharts();
                 }, 1000);
@@ -58775,12 +58842,10 @@ define("@scom/scom-trading-chart", ["require", "exports", "@ijstech/components",
                         enum: [
                             'light',
                             'dark'
-                        ],
-                        readOnly
+                        ]
                     },
                     width: {
-                        type: 'string',
-                        readOnly
+                        type: 'string'
                     }
                 }
             };
@@ -58792,13 +58857,16 @@ define("@scom/scom-trading-chart", ["require", "exports", "@ijstech/components",
                     name: 'Settings',
                     icon: 'cog',
                     command: (builder, userInputData) => {
+                        let _oldData = {
+                            cryptoName: ''
+                        };
                         return {
                             execute: async () => {
-                                this._oldData = Object.assign({}, this._data);
+                                _oldData = Object.assign({}, this._data);
                                 this.updateChart();
                             },
                             undo: () => {
-                                this._data = Object.assign({}, this._oldData);
+                                this._data = Object.assign({}, _oldData);
                                 this.updateChart();
                             },
                             redo: () => { }
@@ -58810,21 +58878,29 @@ define("@scom/scom-trading-chart", ["require", "exports", "@ijstech/components",
                     name: 'Theme Settings',
                     icon: 'palette',
                     command: (builder, userInputData) => {
+                        let oldTag = {};
                         return {
                             execute: async () => {
                                 if (!userInputData)
                                     return;
-                                this.oldTag = JSON.parse(JSON.stringify(this.tag));
-                                this.setTag(userInputData);
+                                oldTag = JSON.parse(JSON.stringify(this.tag));
                                 if (builder)
                                     builder.setTag(userInputData);
+                                else
+                                    this.setTag(userInputData);
+                                if (this.dappContainer)
+                                    this.dappContainer.setTag(userInputData);
                             },
                             undo: () => {
                                 if (!userInputData)
                                     return;
-                                this.setTag(this.oldTag);
+                                this.tag = JSON.parse(JSON.stringify(oldTag));
                                 if (builder)
-                                    builder.setTag(this.oldTag);
+                                    builder.setTag(this.tag);
+                                else
+                                    this.setTag(this.tag);
+                                if (this.dappContainer)
+                                    this.dappContainer.setTag(this.tag);
                             },
                             redo: () => { }
                         };
@@ -58930,60 +59006,31 @@ define("@scom/scom-trading-chart", ["require", "exports", "@ijstech/components",
             maxMarket = maxMarket + stepMarket;
             return { price, market, vol, minPrice, maxPrice, minMarket, maxMarket };
         }
-        getChartData() {
-            // TODO - Use real data
-            // const { cryptoName } = this._data;
-            let chartData;
-            switch (this.duration) {
-                case 1:
-                    chartData = index_2.day;
-                    break;
-                case 7:
-                    chartData = index_2.week;
-                    break;
-                case 30:
-                    chartData = index_2.month;
-                    break;
-                case 90:
-                    chartData = index_2.threeMonths;
-                    break;
-                case 365:
-                    chartData = index_2.year;
-                    break;
-                case 'YTD':
-                    chartData = index_2.ytd;
-                    break;
-                case 'All':
-                    chartData = index_2.all;
-                    break;
-                default:
-                    return this.convertData({});
-            }
-            return this.convertData(chartData.data.points);
+        async getChartData(type) {
+            const chartData = await index_2.callAPI(this._data.cryptoName, type, this.duration);
+            this.currentChartData = type !== 'candlestick' ? this.convertData(chartData) : this.convertToCandlestickData(chartData);
         }
         formatNumber(num) {
             const absNum = Math.abs(num);
             if (absNum >= 1000000000) {
                 return (num / 1000000000).toFixed(2) + 'B';
             }
-            else if (absNum >= 1000000) {
+            if (absNum >= 1000000) {
                 return (num / 1000000).toFixed(2) + 'M';
             }
-            else if (absNum >= 1000) {
+            if (absNum >= 1000) {
                 return (num / 1000).toFixed(2) + 'K';
             }
-            else if (absNum < 0.0000001) {
+            if (absNum < 0.0000001) {
                 return num.toFixed();
             }
-            else if (absNum < 0.00001) {
+            if (absNum < 0.00001) {
                 return num.toFixed(6);
             }
-            else if (absNum < 0.001) {
+            if (absNum < 0.001) {
                 return num.toFixed(4);
             }
-            else {
-                return num.toFixed(2);
-            }
+            return num.toFixed(2);
         }
         initChart(data, type, isDark) {
             const { price, market, vol, minPrice, maxPrice, minMarket, maxMarket } = data;
@@ -59016,7 +59063,7 @@ define("@scom/scom-trading-chart", ["require", "exports", "@ijstech/components",
                                 if (params.axisDimension === 'y') {
                                     return self.formatNumber(params.value);
                                 }
-                                return components_3.moment(params.value).format('DD MMM YY HH:mm:ss');
+                                return components_4.moment(params.value).format('DD MMM YY HH:mm:ss');
                             }
                         },
                         lineStyle: {
@@ -59232,16 +59279,17 @@ define("@scom/scom-trading-chart", ["require", "exports", "@ijstech/components",
             };
             return chartData;
         }
-        updateChart(isType) {
+        async updateChart(isType) {
             var _a, _b;
             if (!this.pnlTradingChart)
                 return;
             const theme = (_a = this.tag) === null || _a === void 0 ? void 0 : _a.theme;
-            const chartData = this.getChartData();
-            const data = this.typeChart !== 'candlestick' ? this.initChart(chartData, this.typeChart, theme === 'dark') : this.initCandlestickChart(this.convertToCandlestickData(index_2.historical.data.quotes));
+            const currentType = this.typeChart;
+            await this.getChartData(currentType);
+            const data = currentType !== 'candlestick' ? this.initChart(this.currentChartData, this.typeChart, theme === 'dark') : this.initCandlestickChart(this.currentChartData);
             if (isType || !this.chartElm) {
                 this.pnlCharts.clearInnerHTML();
-                this.chartElm = new components_3.LineChart(this.pnlCharts, {
+                this.chartElm = new components_4.LineChart(this.pnlCharts, {
                     width: 'calc(100% - 10px)',
                     height: 500,
                     theme: theme || 'light',
@@ -59330,8 +59378,8 @@ define("@scom/scom-trading-chart", ["require", "exports", "@ijstech/components",
         }
     };
     ScomTradingChart = __decorate([
-        components_3.customModule,
-        components_3.customElements('i-scom-trading-chart')
+        components_4.customModule,
+        components_4.customElements('i-scom-trading-chart')
     ], ScomTradingChart);
     exports.default = ScomTradingChart;
 });
