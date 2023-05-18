@@ -14,65 +14,39 @@ import {
   Image,
   Label
 } from '@ijstech/components';
-import { IConfig, PageBlock } from './store/index';
 import { groupBtnStyle, tradingChartStyle } from './index.css';
-import {} from '@ijstech/eth-contract'
-import {} from '@ijstech/eth-wallet'
-import ScomDappContainer from '@scom/scom-dapp-container'
-
-// Dummy data
-import { day, week, month, threeMonths, year, all, historical, ytd } from './store/index';
+import { } from '@ijstech/eth-contract'
+import { } from '@ijstech/eth-wallet'
+import ScomDappContainer from '@scom/scom-dapp-container';
+import { IDuration, IConfig, ICandlestick, ICandlestickData, IPriceOrMarket, callAPI, IType } from './global/index';
 import assets from './assets';
-
-type IType = 'price' | 'market' | 'candlestick';
-type IDuration = 1 | 7 | 30 | 90 | 365 | 'YTD' | 'All';
 
 const durations: { title: string, value: IDuration }[] = [
   {
     title: '1D',
-    value: 1
+    value: '1D'
   },
   {
     title: '7D',
-    value: 7
+    value: '7D'
   },
   {
     title: '1M',
-    value: 30
+    value: '1M'
   },
   {
     title: '3M',
-    value: 90
+    value: '3M'
   },
   {
     title: '1Y',
-    value: 365
-  },
-  {
-    title: 'YTD',
-    value: 'YTD'
+    value: '1Y'
   },
   {
     title: 'ALL',
-    value: 'All'
+    value: 'ALL'
   }
 ]
-
-interface ICandlestickData {
-  timeOpen: string;
-  timeClose: string;
-  timeHigh: string;
-  timeLow: string;
-  quote: {
-    open: number;
-    high: number;
-    low: number;
-    close: number;
-    volume: number;
-    marketCap: number;
-    timestamp: string;
-  }
-}
 
 interface TradingChartElement extends ControlElement {
   cryptoName: string;
@@ -97,15 +71,14 @@ export default class ScomTradingChart extends Module {
   private pnlCharts: Panel;
   private chartElm: LineChart;
   private typeChart: IType = 'price';
-  private duration: IDuration = 1;
+  private duration: IDuration = '1D';
   private hStackType: HStack;
   private hStackSwitch: HStack;
   private hStackDuration: HStack;
   private dappContainer: ScomDappContainer;
+  private currentChartData: IPriceOrMarket | ICandlestick;
 
-  private _oldData: IConfig = { cryptoName: '' };
   private _data: IConfig = { cryptoName: '' };
-  private oldTag: any = {};
   tag: any = {};
   defaultEdit: boolean = true;
   readonly onConfirm: () => Promise<void>;
@@ -164,13 +137,14 @@ export default class ScomTradingChart extends Module {
       }
     }
     this.width = this.tag.width;
+    this.maxWidth = '100%';
     if (this.tag?.theme === 'dark') {
       this.classList.add('trading-chart--dark');
     } else {
       this.classList.remove('trading-chart--dark');
     }
     if (this.pnlTradingChart) {
-      this.updateChart();
+      this.updateChart(true);
       setTimeout(() => {
         this.resizeCharts();
       }, 1000);
@@ -235,12 +209,10 @@ export default class ScomTradingChart extends Module {
           enum: [
             'light',
             'dark'
-          ],
-          readOnly
+          ]
         },
         width: {
-          type: 'string',
-          readOnly
+          type: 'string'
         }
       }
     }
@@ -253,13 +225,16 @@ export default class ScomTradingChart extends Module {
         name: 'Settings',
         icon: 'cog',
         command: (builder: any, userInputData: any) => {
+          let _oldData: IConfig = {
+            cryptoName: ''
+          }
           return {
             execute: async () => {
-              this._oldData = { ...this._data };
+              _oldData = { ...this._data };
               this.updateChart();
             },
             undo: () => {
-              this._data = { ...this._oldData };
+              this._data = { ..._oldData };
               this.updateChart();
             },
             redo: () => { }
@@ -271,17 +246,21 @@ export default class ScomTradingChart extends Module {
         name: 'Theme Settings',
         icon: 'palette',
         command: (builder: any, userInputData: any) => {
+          let oldTag = {};
           return {
             execute: async () => {
               if (!userInputData) return;
-              this.oldTag = JSON.parse(JSON.stringify(this.tag));
-              this.setTag(userInputData);
+              oldTag = JSON.parse(JSON.stringify(this.tag));
               if (builder) builder.setTag(userInputData);
+              else this.setTag(userInputData);
+              if (this.dappContainer) this.dappContainer.setTag(userInputData);
             },
             undo: () => {
               if (!userInputData) return;
-              this.setTag(this.oldTag);
-              if (builder) builder.setTag(this.oldTag);
+              this.tag = JSON.parse(JSON.stringify(oldTag));
+              if (builder) builder.setTag(this.tag);
+              else this.setTag(this.tag);
+              if (this.dappContainer) this.dappContainer.setTag(this.tag);
             },
             redo: () => { }
           }
@@ -390,55 +369,32 @@ export default class ScomTradingChart extends Module {
     return { price, market, vol, minPrice, maxPrice, minMarket, maxMarket };
   }
 
-  private getChartData() {
-    // TODO - Use real data
-    // const { cryptoName } = this._data;
-    let chartData: { data: { points: { [key: string]: { v: number[] } } } };
-    switch (this.duration) {
-      case 1:
-        chartData = day;
-        break;
-      case 7:
-        chartData = week;
-        break;
-      case 30:
-        chartData = month;
-        break;
-      case 90:
-        chartData = threeMonths;
-        break;
-      case 365:
-        chartData = year;
-        break;
-      case 'YTD':
-        chartData = ytd;
-        break;
-      case 'All':
-        chartData = all;
-        break;
-      default:
-        return this.convertData({});
-    }
-    return this.convertData(chartData.data.points);
+  private async getChartData(type: IType) {
+    const chartData = await callAPI(this._data.cryptoName, type, this.duration);
+    this.currentChartData = type !== 'candlestick' ? this.convertData(chartData) : this.convertToCandlestickData(chartData);
   }
 
   private formatNumber(num: number) {
     const absNum = Math.abs(num);
     if (absNum >= 1000000000) {
       return (num / 1000000000).toFixed(2) + 'B';
-    } else if (absNum >= 1000000) {
-      return (num / 1000000).toFixed(2) + 'M';
-    } else if (absNum >= 1000) {
-      return (num / 1000).toFixed(2) + 'K';
-    } else if (absNum < 0.0000001) {
-      return num.toFixed();
-    } else if (absNum < 0.00001) {
-      return num.toFixed(6);
-    } else if (absNum < 0.001) {
-      return num.toFixed(4);
-    } else {
-      return num.toFixed(2);
     }
+    if (absNum >= 1000000) {
+      return (num / 1000000).toFixed(2) + 'M';
+    }
+    if (absNum >= 1000) {
+      return (num / 1000).toFixed(2) + 'K';
+    }
+    if (absNum < 0.0000001) {
+      return num.toFixed();
+    }
+    if (absNum < 0.00001) {
+      return num.toFixed(6);
+    }
+    if (absNum < 0.001) {
+      return num.toFixed(4);
+    }
+    return num.toFixed(2);
   }
 
   private initChart(data: any, type: IType, isDark: boolean) {
@@ -690,11 +646,12 @@ export default class ScomTradingChart extends Module {
     return chartData;
   }
 
-  private updateChart(isType?: boolean) {
+  private async updateChart(isType?: boolean) {
     if (!this.pnlTradingChart) return;
     const theme = this.tag?.theme;
-    const chartData = this.getChartData();
-    const data = this.typeChart !== 'candlestick' ? this.initChart(chartData, this.typeChart, theme === 'dark') : this.initCandlestickChart(this.convertToCandlestickData(historical.data.quotes));
+    const currentType = this.typeChart;
+    await this.getChartData(currentType);
+    const data = currentType !== 'candlestick' ? this.initChart(this.currentChartData, this.typeChart, theme === 'dark') : this.initCandlestickChart(this.currentChartData as ICandlestick);
     if (isType || !this.chartElm) {
       this.pnlCharts.clearInnerHTML();
       this.chartElm = new LineChart(this.pnlCharts, {
