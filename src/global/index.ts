@@ -48,7 +48,8 @@ export const callAPI = async (name: string, type: IType, duration: IDuration) =>
   try {
     const response = await fetch(`${API_ENDPOINT}${prefix}`);
     const jsonData = await response.json();
-    return type === 'candlestick' ? jsonData.data.quotes : jsonData.data.points || {};
+    const data = type === 'candlestick' ? jsonData.data.quotes : jsonData.data.points;
+    return data || {};
   } catch (error) {
     console.log(error);
     // This line will be removed when the API is ready

@@ -58649,7 +58649,8 @@ define("@scom/scom-trading-chart/global/index.ts", ["require", "exports", "@ijst
         try {
             const response = await fetch(`${exports.API_ENDPOINT}${prefix}`);
             const jsonData = await response.json();
-            return type === 'candlestick' ? jsonData.data.quotes : jsonData.data.points || {};
+            const data = type === 'candlestick' ? jsonData.data.quotes : jsonData.data.points;
+            return data || {};
         }
         catch (error) {
             console.log(error);
@@ -58863,11 +58864,18 @@ define("@scom/scom-trading-chart", ["require", "exports", "@ijstech/components",
                         return {
                             execute: async () => {
                                 _oldData = Object.assign({}, this._data);
+                                this._data = Object.assign({}, userInputData);
+                                this.updateTitle();
                                 this.updateChart();
+                                if (builder === null || builder === void 0 ? void 0 : builder.setData)
+                                    builder.setData(this._data);
                             },
                             undo: () => {
                                 this._data = Object.assign({}, _oldData);
+                                this.updateTitle();
                                 this.updateChart();
+                                if (builder === null || builder === void 0 ? void 0 : builder.setData)
+                                    builder.setData(this._data);
                             },
                             redo: () => { }
                         };
@@ -58911,6 +58919,7 @@ define("@scom/scom-trading-chart", ["require", "exports", "@ijstech/components",
             return actions;
         }
         getConfigurators() {
+            const self = this;
             return [
                 {
                     name: 'Builder Configurator',
@@ -58928,6 +58937,21 @@ define("@scom/scom-trading-chart", ["require", "exports", "@ijstech/components",
                     target: 'Embedders',
                     getActions: () => {
                         return this._getActions(this.getPropertiesSchema(true), this.getThemeSchema(true));
+                    },
+                    getLinkParams: () => {
+                        const data = this._data || {};
+                        return {
+                            data: window.btoa(JSON.stringify(data))
+                        };
+                    },
+                    setLinkParams: async (params) => {
+                        if (params.data) {
+                            const utf8String = decodeURIComponent(params.data);
+                            const decodedString = window.atob(utf8String);
+                            const newData = JSON.parse(decodedString);
+                            let resultingData = Object.assign(Object.assign({}, self._data), { newData });
+                            await this.setData(resultingData);
+                        }
                     },
                     getData: this.getData.bind(this),
                     setData: this.setData.bind(this),
