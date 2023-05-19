@@ -231,11 +231,16 @@ export default class ScomTradingChart extends Module {
           return {
             execute: async () => {
               _oldData = { ...this._data };
+              this._data = { ...userInputData };
+              this.updateTitle();
               this.updateChart();
+              if (builder?.setData) builder.setData(this._data);
             },
             undo: () => {
               this._data = { ..._oldData };
+              this.updateTitle();
               this.updateChart();
+              if (builder?.setData) builder.setData(this._data);
             },
             redo: () => { }
           }
@@ -272,6 +277,7 @@ export default class ScomTradingChart extends Module {
   }
 
   getConfigurators() {
+    const self = this;
     return [
       {
         name: 'Builder Configurator',
@@ -289,6 +295,24 @@ export default class ScomTradingChart extends Module {
         target: 'Embedders',
         getActions: () => {
           return this._getActions(this.getPropertiesSchema(true), this.getThemeSchema(true))
+        },
+        getLinkParams: () => {
+          const data = this._data || {};
+          return {
+            data: window.btoa(JSON.stringify(data))
+          }
+        },
+        setLinkParams: async (params: any) => {
+          if (params.data) {
+            const utf8String = decodeURIComponent(params.data);
+            const decodedString = window.atob(utf8String);
+            const newData = JSON.parse(decodedString);
+            let resultingData = {
+              ...self._data,
+              newData
+            };
+            await this.setData(resultingData);
+          }
         },
         getData: this.getData.bind(this),
         setData: this.setData.bind(this),
